@@ -1,2 +1,2 @@
-# Covid-19-Dashboard
+# COVID-19-Dashboard
 COVID-Pro: a province-based analysis for Italy
