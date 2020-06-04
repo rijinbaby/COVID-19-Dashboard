@@ -28,7 +28,7 @@ pacman::p_load(shiny, shinydashboard, shinydashboardPlus, leaflet, tidyverse, pl
 `%notin%` <- Negate(`%in%`)
 
 #Usefull Variables
-shinyPath <- "C:/Users/Rijin/Documents/shidash_COVID_ItalyRijin/"
+shinyPath <- "C:/Users/Rijin/Documents/Covid-19-Dashboard/"
 
 #-----------------
 # Source helper functions -----
@@ -88,13 +88,16 @@ server <- function(input, output, session){
     })
     
     output$textPres <- renderText({
-      HTML(paste0("<b>App developed by: L.Ferrari, G.Gerardi, G.Manzi, A.Micheletti, F.Nicolussi, S.Salini.</b>
+      HTML(paste0("<b>Dashboard developed by: L.Ferrari, G.Gerardi, G.Manzi, A.Micheletti, F.Nicolussi, S.Salini</b>
                   <br />
                   <br />
-                   Cumulative rates are the ratio between the cumulative cases and the total population for the selected province multiplied by 100000.
+                   Cumulative rates are the ratio between the cumulative cases and the total population for the selected province multiplied by 100000
                   <br />
                   <br />
-                   The results are computed using the Italian Civil Protection dataset."))
+                   The results are computed using the Italian Civil Protection dataset
+                  <br />
+                  <br />
+                   We thank students R. Baby, A. Iordache, A. Singh and N. Velardo for their contribution"))
     })
     
     #----

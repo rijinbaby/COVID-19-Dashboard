@@ -14,7 +14,7 @@ body <- dashboardBody(
           tags$h2("Province Map"),
           fluidRow(
                    box(leafletOutput("provinceMap")
-                       , width = 9, height = 425
+                       , width = 9, height = 470
                        , status = "info"
                        #, background = "aqua"
                        , collapsible = F, solidHeader = T
@@ -39,7 +39,7 @@ body <- dashboardBody(
                        
                    ),
 
-                   box(width = NULL, height = 202
+                   box(width = NULL, height = 250
                        , status = "info"
                        #, background = "aqua"
                        , h5(class = "text-muted"
