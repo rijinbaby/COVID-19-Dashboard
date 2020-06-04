@@ -10,7 +10,7 @@ library(writexl)
 #Usefull Functions
 `%notin%` <- Negate(`%in%`)
 
-Path<-"C:/Users/Rijin/Documents/shidash_COVID_ItalyRijin/data/"
+Path<-"C:/Users/Rijin/Documents/Covid-19-Dashboard/data/"
 
 
 #ProtezioneCivile - Regioni
