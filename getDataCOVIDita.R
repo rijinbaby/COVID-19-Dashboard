@@ -183,19 +183,24 @@ downAndSaveDataISTAT <- function(psw="1029qpwo"
                                  , pcmTotData=pcmTOTData
                                  , mortiProv=mortiProvinces){
 
-  con <- RPostgreSQL::dbConnect(RPostgres::Postgres()
-                                , dbname = "COVID19"
-                                , host="unisid-dm-demm.unisid.unimi.it"
-                                , port="5432"
-                                , user="getTweet"
-                                , password=psw)
+  # con <- RPostgreSQL::dbConnect(RPostgres::Postgres()
+  #                               , dbname = "COVID19"
+  #                               , host="unisid-dm-demm.unisid.unimi.it"
+  #                               , port="5432"
+  #                               , user="getTweet"
+  #                               , password=psw)
+  # 
+  # deathDates <- RPostgreSQL::dbGetQuery(conn = con
+  #                                           , statement = "SELECT DISTINCT *
+  #                                                         FROM public.deathDates")
+  # 
+  # deathDates$data <- zoo::as.Date(as.numeric(deathDates$data), origin="1970/01/01")
+
   
-  deathDates <- RPostgreSQL::dbGetQuery(conn = con
-                                            , statement = "SELECT DISTINCT *
-                                                          FROM public.deathDates")
+  # Read ISTAT updated file
+  deathDates <- readr::read_csv(paste0(Path, "/ISTAT/ISTAT_Updated_Till_2020-04-30", ".csv"))
   
-  deathDates$data <- zoo::as.Date(as.numeric(deathDates$data), origin="1970/01/01")
-  #-------
+  
   
   unique(mortiProv$provincia)[unique(mortiProv$provincia)%notin%unique(deathDates$province)]
   #unique(mortiProv$provincia)[unique(mortiProv$provincia)%notin%unique(pcmTOTData$denominazione_provincia)]

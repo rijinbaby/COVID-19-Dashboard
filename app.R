@@ -9,7 +9,8 @@ options(warn=-1)
 
 #Install packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(shiny, shinydashboard, shinydashboardPlus, leaflet, tidyverse, plotly, ggplot2)
+pacman::p_load(shiny, shinydashboard, shinydashboardPlus, leaflet, tidyverse, plotly, ggplot2,
+               htmltools)
 
 #Load Packages
 {
@@ -21,6 +22,7 @@ pacman::p_load(shiny, shinydashboard, shinydashboardPlus, leaflet, tidyverse, pl
   library(leaflet)
   library(plotly)
   library(ggplot2)
+  library(htmltools)
 }
 
 
@@ -34,11 +36,24 @@ shinyPath <- "C:/Users/Rijin/Documents/Covid-19-Dashboard/"
 # Source helper functions -----
 
 setwd(shinyPath)  #   /srv/shiny-server/shidash_COVID_Italy
+
 source("getDataCOVIDita.R")
 downAndSaveDataPMC()
 downDatiSQL()
 downAndSaveDataISTAT()
 cumulDeathsProv()
+# 
+# #temp getDataCOVIDita.R
+# write.csv(pcmTOTData,"pcmTOTData.csv",row.names = F,fileEncoding = "UTF-8")
+# write.csv(mortiProvinces,"mortiProvinces.csv",row.names = F,fileEncoding = "UTF-8")
+# write.csv(deathDatesReg,"deathDatesReg.csv",row.names = F,fileEncoding = "UTF-8")
+# write.csv(cumDeathsProv,"cumDeathsProv.csv",row.names = F,fileEncoding = "UTF-8")
+
+# #temp getDataCOVIDita.R
+# pcmTOTData <- read.csv("~/Covid-19-Dashboard/temp_data/pcmTOTData.csv")
+# mortiProvinces <- read.csv("~/Covid-19-Dashboard/temp_data/mortiProvinces.csv")
+# deathDatesReg <- read.csv("~/Covid-19-Dashboard/temp_data/deathDatesReg.csv")
+# cumDeathsProv <- read.csv("~/Covid-19-Dashboard/temp_data/cumDeathsProv.csv")
 
 source("SIRModelParamCV_optimGG.R")
 source("SIRModelParam_15gg.R")
@@ -91,10 +106,9 @@ server <- function(input, output, session){
       HTML(paste0("<b>Dashboard developed by: L.Ferrari, G.Gerardi, G.Manzi, A.Micheletti, F.Nicolussi, S.Salini</b>
                   <br />
                   <br />
-                   Cumulative rates are the ratio between the cumulative cases and the total population for the selected province multiplied by 100000
+                   Cumulative rates are the ratio between the cumulative cases and the total population for the selected province multiplied by 100000.
                   <br />
-                  <br />
-                   The results are computed using the Italian Civil Protection dataset
+                   The results are computed using the Italian Civil Protection dataset.
                   <br />
                   <br />
                    We thank students R. Baby, A. Iordache, A. Singh and N. Velardo for their contribution"))
@@ -417,8 +431,9 @@ server <- function(input, output, session){
           layout(
             title = paste0("Time series of weekly deaths by year in ", unique(deathDF$province),  " until the ", maxData)
             , xaxis = list( type = 'date'
-							, tickformat = "%d/%m" )
-            , yaxis = list(title = "Cases")
+							, tickformat = "%d/%m"
+							, title = "Date")
+            , yaxis = list(title = "Death_Count")
 			, legend=list(title=list(text='Year')) #'<b> Year </b>'
           )
 

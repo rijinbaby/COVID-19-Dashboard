@@ -14,14 +14,14 @@ body <- dashboardBody(
           tags$h2("Province Map"),
           fluidRow(
                    box(leafletOutput("provinceMap")
-                       , width = 9, height = 470
+                       , width = 9, height = 440
                        , status = "info"
                        #, background = "aqua"
-                       , collapsible = F, solidHeader = T
+                       , collapsible = F, solidHeader = F
                    ),
 
             column(width = 3,
-                   box(width = NULL, height = 202
+                   box(width = NULL, height = 175
                        , status = "info"
                        #, background = "aqua"
                        , selectInput(inputId="Province"
@@ -39,7 +39,7 @@ body <- dashboardBody(
                        
                    ),
 
-                   box(width = NULL, height = 250
+                   box(width = NULL, height = 245
                        , status = "info"
                        #, background = "aqua"
                        , h5(class = "text-muted"

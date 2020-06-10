@@ -6,12 +6,17 @@ pacman::p_load(leaflet, tidyverse)
 #Load Packages
 library(leaflet)
 library(tidyverse)
+library(htmltools)
 
 #   colnames(pcmTOTData)
 #   database=ProvDB
 
 ProvinceMap <- function(database, var) {
   options(warn=-1)
+  
+  # database <- pcmTOTData
+  # var <- "totale_casi.x"
+  # prevIndex
   
   discrVariable <- round((database[[var]]/sum(database[[var]]))*100, digits = 2)
   if(sum(is.nan(discrVariable))>0){
@@ -21,16 +26,29 @@ ProvinceMap <- function(database, var) {
   # sort(discrVariable)
   discrLevel <- as.numeric(quantile(discrVariable, probs = seq(0, 1, length.out = 11)))
   
+  # getColor <- function(database) {
+  #   sapply(database$discrVariable, function(discrVariable) {
+  #     if(discrVariable <= 0) {
+  #       "darkgreen"
+  #     } else if(discrVariable <= discrLevel[6]) {
+  #       "orange"
+  #     } else if(discrVariable <= discrLevel[9]) {
+  #       "red"
+  #     }else if(discrVariable > discrLevel[9]) {
+  #       "black"
+  #     } })
+  # }
+  # 
   getColor <- function(database) {
     sapply(database$discrVariable, function(discrVariable) {
       if(discrVariable <= 0) {
-        "darkgreen"
+        "green"
       } else if(discrVariable <= discrLevel[6]) {
-        "orange"
+        "yellow"
       } else if(discrVariable <= discrLevel[9]) {
-        "red"
+        "orange"
       }else if(discrVariable > discrLevel[9]) {
-        "black"
+        "red"
       } })
   }
   
@@ -39,7 +57,7 @@ ProvinceMap <- function(database, var) {
                    , paste0("<b>", toupper(database$denominazione_provincia), "</b>")
                    , paste0(" Cumulative cases: ", database$totale_casi.x)
                    , paste0(" Cumulative rates: ", database$prevIndex))
-  
+  # # 
   
   #Map building----
   icons <- awesomeIcons(
@@ -48,20 +66,17 @@ ProvinceMap <- function(database, var) {
     library = 'ion',
     markerColor = getColor(database)
   )
-  
-  provMap <- leaflet(data = database) %>% 
+
+  provMap <- leaflet(data = database) %>%
     addTiles() %>%
     addAwesomeMarkers(~long.x, ~lat.x
                       , icon=icons
-                      , popup = ~setLabel)
+                      , popup = ~setLabel
+                      , label = ~toupper(denominazione_provincia))
+
     
   #Map plot----
   return(provMap)
     
 }
-
-
-
-
-
 
