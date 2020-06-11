@@ -9,8 +9,7 @@ options(warn=-1)
 
 #Install packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(shiny, shinydashboard, shinydashboardPlus, leaflet, tidyverse, plotly, ggplot2,
-               htmltools)
+pacman::p_load(shiny, shinydashboard, shinydashboardPlus, leaflet, tidyverse, plotly, ggplot2)
 
 #Load Packages
 {
@@ -22,7 +21,6 @@ pacman::p_load(shiny, shinydashboard, shinydashboardPlus, leaflet, tidyverse, pl
   library(leaflet)
   library(plotly)
   library(ggplot2)
-  library(htmltools)
 }
 
 
