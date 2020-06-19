@@ -64,25 +64,25 @@ body <- dashboardBody(
               ,box(withSpinner(plotlyOutput("N_TS"))
                    , width = 6
                    , height = "425px"
-                   , status = "warning"
+                   # , status = "warning"
                    , collapsible = F
-                   , solidHeader = T
+                   , solidHeader = F
                    # ,style='padding-right:1px;padding-left:1px;'
                    # ,title="XXXX"
               )
               
               # ,column(width = 6,
-              #   box(width = NULL
-              #      , height = "275px"
-              #      , status = "info"
-              #      , h5(class = "text-muted"
-              #          , br()
-              #          , uiOutput(outputId = "textPres")
-              #          , uiOutput(outputId = "textDrates")
-              #          , style = "color : black;"
-              #     )
-              #     , downloadButton("ProvList1", "Province list")
-              # )
+                ,box(width = 6
+                   , height = "250px"
+                   # , status = "info"
+                   , h5(class = "text-muted"
+                       , br()
+                       , uiOutput(outputId = "textPres")
+                       , uiOutput(outputId = "textDrates")
+                       , style = "color : black;"
+                  )
+                  , downloadButton("ProvList1", "Province list")
+              )
               # )
               
             )
@@ -129,7 +129,7 @@ body <- dashboardBody(
               box(withSpinner(plotlyOutput("Drates_TS"))
                   , width = 12
                   , height = "525px"
-                  , status = "warning"
+                  # , status = "warning"
                   , collapsible = F
                   , solidHeader = F
                   # ,style='padding-right:1px;padding-left:1px;'
@@ -144,22 +144,22 @@ body <- dashboardBody(
   # "About" -------------------------------------------------------------------
   
   
-  tabItem(tabName = "About",
-          tags$h2("About"),
-          fluidRow(
-            box(width = NULL#, height = 245
-                , status = "info"
-                #, background = "aqua"
-                , h5(class = "text-muted"
-                     , br()
-                     , uiOutput(outputId = "textPres")
-                     , uiOutput(outputId = "textDrates")
-                     , style = "color : black;"
-                )
-                , downloadButton("ProvList1", "Province list")
-            )
-          )
-  ),
+  # tabItem(tabName = "About",
+  #         tags$h2("About"),
+  #         fluidRow(
+  #           box(width = NULL#, height = 245
+  #               , status = "info"
+  #               #, background = "aqua"
+  #               , h5(class = "text-muted"
+  #                    , br()
+  #                    , uiOutput(outputId = "textPres")
+  #                    , uiOutput(outputId = "textDrates")
+  #                    , style = "color : black;"
+  #               )
+  #               , downloadButton("ProvList1", "Province list")
+  #           )
+  #         )
+  # ),
   
     # "Time Series"----
     tabItem(tabName = "TimeSeries",

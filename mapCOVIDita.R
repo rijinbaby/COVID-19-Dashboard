@@ -20,7 +20,7 @@ ProvinceMap <- function(database, var) {
   if(var=="prevIndex")
   {
     provMap <- leaflet(db_geo) %>%
-      setView(lat=41.8719, lng=12.5674,zoom=6 ) %>%
+      # setView(lat=41.8719, lng=12.5674,zoom=6 ) %>%
       # fitBounds(lng1 = 15,lat1 =43 ,lng2 = 9,lat2 =36 ) %>%
       addTiles() %>%
       addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
@@ -31,7 +31,7 @@ ProvinceMap <- function(database, var) {
   else if(var=="totale_casi.x")
   {
     provMap <- leaflet(db_geo) %>%
-      setView(lat=41.8719, lng=12.5674,zoom=6) %>%
+      # setView(lat=41.8719, lng=12.5674,zoom=6) %>%
       # fitBounds(lng1 = 9,lat1 =36 ,lng2 = 15,lat2 =43 ) %>%
       addTiles() %>%
       addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,

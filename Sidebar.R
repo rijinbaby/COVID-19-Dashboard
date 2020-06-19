@@ -20,7 +20,7 @@ sidebar <- dashboardSidebar(
 
 # about -------------------------------------------------------------------
 
-             ,menuItem("About", tabName = "About", icon = icon("user"))
+             # ,menuItem("About", tabName = "About", icon = icon("user"))
 
 ,sliderInput(inputId="selectDate1"
              , label="Select Mapping Date:"
