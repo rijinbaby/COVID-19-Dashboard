@@ -1,16 +1,41 @@
-#Install packages
-if (!require("pacman")) install.packages("pacman")
-pacman::p_load(tidyverse, readxl, writexl, RPostgreSQL, RPostgres, zoo)
-
-#Load Packages
-library(tidyverse)
-library(readxl)
-library(writexl)
+# #Install packages
+# if (!require("pacman")) install.packages("pacman")
+# pacman::p_load(tidyverse, readxl, writexl, RPostgreSQL, RPostgres, zoo)
+# 
+# #Load Packages
+# library(tidyverse)
+# library(readxl)
+# library(writexl)
 
 #Usefull Functions
 `%notin%` <- Negate(`%in%`)
 
 Path<-"C:/Users/Rijin/Documents/Covid-19-Dashboard/data/"
+
+italy_data <- function(){
+  pcm_data <- read.csv("https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale.csv") 
+  
+  pcm_data$data<-as.Date(pcm_data$data, "%Y-%m-%d")
+  last_day <- max(pcm_data$data)
+  last_day_bf <- last_day - 1
+  
+  active <- pcm_data$totale_positivi[which(pcm_data$data==last_day)]
+  active_diff <- (active - pcm_data$totale_positivi[which(pcm_data$data==last_day_bf)])
+    
+  recovered <- pcm_data$dimessi_guariti[which(pcm_data$data==last_day)]
+  recovered_diff <- (recovered - pcm_data$dimessi_guariti[which(pcm_data$data==last_day_bf)])
+    
+  death <- pcm_data$deceduti[which(pcm_data$data==last_day)]
+  death_diff <- (death - pcm_data$deceduti[which(pcm_data$data==last_day_bf)])
+  
+  confirmed <- active+recovered+death
+  confirmed_diff <- pcm_data$nuovi_positivi[which(pcm_data$data==last_day)]
+  
+  info_box_data <- data.frame(confirmed,confirmed_diff,active,active_diff,recovered,recovered_diff,death,death_diff)
+  
+  info_box_data <<- info_box_data
+
+}
 
 
 #ProtezioneCivile - Regioni

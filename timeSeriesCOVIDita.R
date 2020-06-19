@@ -9,6 +9,44 @@ library(plotly)
 
 # database = cumDeathsProv
 
+
+# death_rate_home chart ---------------------------------------------------
+
+death_rate_home <- function(database, variable){
+  options(warn=-1)
+  
+  untilDate <- max(database$data)
+  
+  # if(variable=="PrevIDX"){
+    
+    database <- database[,c("provincia",  "data", "deathRates")]
+    
+    colnames(database) <- c("Province", "Date", "Death rates")
+    
+    # title=paste0("Death rates until the "
+    #              , paste0(str_split(untilDate, "-")[[1]][3]
+    #                       , "/",  str_split(untilDate, "-")[[1]][2])
+    #              , " at provincial level")) +
+    
+    Plot<-ggplot(data=database, aes(x=Date, color=Province)) +
+      geom_line(aes(y=`Death rates`)) +
+      geom_point(aes(y=`Death rates`), size=1) +
+      labs(
+        x = "Dates",
+        #y = "Death rates",
+        color="Provinces",
+        title=paste0("Province Level Death Rates")) +
+      theme(legend.position = "none"
+            ,legend.title = element_text(colour="black", face = "bold"))
+    
+    GGPlotly<-ggplotly(Plot)
+    
+    GGPrlotly <- GGPlotly %>%
+      layout(xaxis = list(visible=FALSE))
+    
+    return(print(x = GGPrlotly))
+  }
+
 deathTS <- function(database, variable){
   options(warn=-1)
   

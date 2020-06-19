@@ -9,20 +9,25 @@ options(warn=-1)
 
 #Install packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(shiny, shinydashboard, shinydashboardPlus, leaflet, tidyverse, plotly, ggplot2)
+pacman::p_load(shiny, shinydashboard, shinydashboardPlus, leaflet, tidyverse, plotly, ggplot2,
+               geojsonio,sp,htmltools,shinycssloaders)
 
 #Load Packages
 {
   library(shiny)
   library(shinydashboard)
   library(shinydashboardPlus)
-  #----
+  #-
   library(tidyverse)
   library(leaflet)
   library(plotly)
   library(ggplot2)
+  #-
+  library(geojsonio)
+  library(sp)
+  library(htmltools)
+  library(shinycssloaders)
 }
-
 
 #Usefull Functions
 `%notin%` <- Negate(`%in%`)
@@ -40,18 +45,7 @@ downAndSaveDataPMC()
 downDatiSQL()
 downAndSaveDataISTAT()
 cumulDeathsProv()
-# 
-# #temp getDataCOVIDita.R
-# write.csv(pcmTOTData,"pcmTOTData.csv",row.names = F,fileEncoding = "UTF-8")
-# write.csv(mortiProvinces,"mortiProvinces.csv",row.names = F,fileEncoding = "UTF-8")
-# write.csv(deathDatesReg,"deathDatesReg.csv",row.names = F,fileEncoding = "UTF-8")
-# write.csv(cumDeathsProv,"cumDeathsProv.csv",row.names = F,fileEncoding = "UTF-8")
-
-# #temp getDataCOVIDita.R
-# pcmTOTData <- read.csv("~/Covid-19-Dashboard/temp_data/pcmTOTData.csv")
-# mortiProvinces <- read.csv("~/Covid-19-Dashboard/temp_data/mortiProvinces.csv")
-# deathDatesReg <- read.csv("~/Covid-19-Dashboard/temp_data/deathDatesReg.csv")
-# cumDeathsProv <- read.csv("~/Covid-19-Dashboard/temp_data/cumDeathsProv.csv")
+italy_data()
 
 source("SIRModelParamCV_optimGG.R")
 source("SIRModelParam_15gg.R")
@@ -75,7 +69,10 @@ source("Sidebar.R")
 ## Body content
 source("Body.R")
 
-ui <- dashboardPage(header, sidebar, body)
+# source("UI_mod.R")
+
+ui <- dashboardPage(header, sidebar, body ) #,skin = "red"
+
 
 #-----------------
 
@@ -83,6 +80,57 @@ server <- function(input, output, session){
   
   #"Provinces map"----
   {
+    #"infobox"----
+    output$total_box <- renderValueBox({
+      if(info_box_data$confirmed_diff>=0){
+      valueBox(
+        paste0(info_box_data$confirmed," (+",info_box_data$confirmed_diff,")"), "Confirmed", icon = icon("user", lib = "glyphicon"),color = "red"
+        )}
+        else{
+          valueBox(
+            paste0(info_box_data$confirmed," (",info_box_data$confirmed_diff,")"), "Confirmed", icon = icon("user", lib = "glyphicon"),
+            color = "red"
+        )}
+      })
+    
+    output$active_box <- renderValueBox({
+      if(info_box_data$active_diff>=0){
+      valueBox(
+        paste0(info_box_data$active," (+",info_box_data$active_diff,")"), "Active",color = "blue"
+          #icon = "fas fa-ambulance"
+        )}
+        else{
+          valueBox(
+            paste0(info_box_data$active," (",info_box_data$active_diff,")"), "Active",
+            color = "blue"
+        )}
+    })  
+    output$Recovered_box <- renderValueBox({
+      if(info_box_data$recovered_diff>=0){
+      valueBox(
+        paste0(info_box_data$recovered," (+",info_box_data$recovered_diff,")" ), "Recovered", color = "green"
+        #icon = "fas fa-heart-broken"
+        
+      )}
+      else{
+        valueBox(
+          paste0(info_box_data$recovered," (",info_box_data$recovered_diff,")" ), "Recovered", color = "green"
+          #icon = "fas fa-heart-broken"
+      )}
+    })
+    output$deceased_box <- renderValueBox({
+      if(info_box_data$death_diff>=0){
+      valueBox(
+        paste0(info_box_data$death," (+",info_box_data$death_diff,")" ), "Deceased", color = "orange"
+        #icon = "fas fa-heart-broken"
+      )}
+      else{
+        valueBox(
+          paste0(info_box_data$death," (",info_box_data$death_diff,")" ), "Deceased", color = "orange"
+          #icon = "fas fa-heart-broken"
+        )}
+      })
+    
     # Create the map----
     output$provinceMap <- renderLeaflet({
 
@@ -90,14 +138,30 @@ server <- function(input, output, session){
       #   selectDate="2020-03-26"
       ProvDB <- pcmTOTData[which(pcmTOTData$data==selectDate),]
 
-      var <- switch(input$Province
-                    , "Province cumulative cases" = "totale_casi.x"
-                    , "Province cumulative rates" = "prevIndex")
-      #   var="prevIndex"
+      # var <- switch(input$Province
+      #               , "Cumulative Case" = "totale_casi.x"
+      #               , "Cumulative Rate" = "prevIndex")
+        var="totale_casi.x"
 
       provMap <- ProvinceMap(ProvDB, var)
       provMap
 
+    })
+    
+    output$provinceMap1 <- renderLeaflet({
+      
+      selectDate <- input$selectDate1
+      #   selectDate="2020-03-26"
+      ProvDB <- pcmTOTData[which(pcmTOTData$data==selectDate),]
+      
+      # var <- switch(input$Province
+      #               , "Cumulative Case" = "totale_casi.x"
+      #               , "Cumulative Rate" = "prevIndex")
+      var="prevIndex"
+      
+      provMap <- ProvinceMap(ProvDB, var)
+      provMap
+      
     })
     
     output$textPres <- renderText({
@@ -112,20 +176,30 @@ server <- function(input, output, session){
                    We thank students R. Baby, A. Iordache, A. Singh and N. Velardo for their contribution"))
     })
     
-    #----
+   
+     #----
     
     # Plot the Deaths prevalence index----
     output$Drates_TS <- renderPlotly({
       
       if(nrow(cumDeathsProv)>0){
         
-        DR_Plot <- deathTS(cumDeathsProv, "PrevIDX")
+        if(is.null(input$inProv)){
+          cumDeathsProv <- cumDeathsProv
+        }
+        
+        else{
+          prov <- input$inProv
+          cumDeathsProv <- cumDeathsProv[which(cumDeathsProv$provincia %in% prov),]
+        }
+      }
+        DR_Plot <- death_rate_home(cumDeathsProv, "PrevIDX")
         
         print(DR_Plot)
         
       }
       
-    })
+    )
     
     output$textDrates <- renderText({
       HTML(paste0("<b><em>Death rates</em></b>"
@@ -149,24 +223,26 @@ server <- function(input, output, session){
     # Plot the National prevalence index
     output$N_TS <- renderPlotly({
       
-      rangeDays <- input$selectDate2
+      rangeDays <- input$selectDate1
       
       #   rangeDays="2020-04-07"
       prevIDXBound(pcmTOTData, rangeDays)
       
       if(nrow(totalPrevIDX)>0){
-
+        # title = "Cumulative rates in Italy and in the provinces with min and max values"
         IdxPlot <- plot_ly(totalPrevIDX, x = ~data, y = ~natIDX, mode = 'lines', name = 'National') %>%
           add_trace(y = ~upIDX, mode = 'lines', name = upperPR) %>%
           add_trace(y = ~lowIDX, mode = 'lines', name = lowerPR) %>%
           add_trace(y = ~natIDX, mode = 'lines', name = 'National') %>%
-          layout(title = "Cumulative rates in Italy and in the provinces with min and max values"
+          layout(title = "Comparing National Rate with worst and least affected Provinces"
                  , xaxis = list(title = "Days")
                  , yaxis = list (title = "Cumulative rates")
 				 , legend=list(title=list(text='Legend')))
+        
+        IdxPlot <- IdxPlot %>% layout(legend = list(x = 0.1, y = 0.9))
 
+        # withSpinner(print(IdxPlot))
         print(IdxPlot)
-
       }
 
     })

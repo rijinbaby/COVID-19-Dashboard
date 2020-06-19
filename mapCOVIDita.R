@@ -1,78 +1,46 @@
 
-#Install packages
-if (!require("pacman")) install.packages("pacman")
-pacman::p_load(leaflet, tidyverse)
-
-#Load Packages
-library(leaflet)
-library(tidyverse)
-library(htmltools)
-
-#   colnames(pcmTOTData)
-#   database=ProvDB
-
 ProvinceMap <- function(database, var) {
   options(warn=-1)
   
-  # database <- pcmTOTData
-  # var <- "totale_casi.x"
-  # prevIndex
+  # geojson file for Italy
+  geo_italy <- geojsonio::geojson_read("~/Covid-19-Dashboard/data/geo_italy.geojson", what = "sp")
   
-  discrVariable <- round((database[[var]]/sum(database[[var]]))*100, digits = 2)
-  if(sum(is.nan(discrVariable))>0){
-    discrVariable[which(is.nan(discrVariable))] <- 0
+  #
+  pal <- leaflet::colorNumeric(c("blue","yellow","red"), NULL)  # viridis   YlOrRd  RdYlBu
+  
+  # merge geojson with our data
+  db_geo <- sp::merge(geo_italy,database,by.x ="prov_name",by.y="denominazione_provincia")
+  
+  labels <- sprintf(
+    "<strong>%s</strong><br/> Cumulative Case: %g <br/> Cumulative Rate: %g",
+    db_geo$prov_name, db_geo$totale_casi.x, db_geo$prevIndex
+  ) %>% lapply(htmltools::HTML)
+  
+  if(var=="prevIndex")
+  {
+    provMap <- leaflet(db_geo) %>%
+      # setView(lat=41.8719, lng=12.5674,zoom=5 ) %>%
+      fitBounds(lng1 = 15,lat1 =43 ,lng2 = 9,lat2 =36 ) %>%
+      addTiles() %>%
+      addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                  fillColor = ~pal(prevIndex),
+                  label = labels) %>%
+      addLegend(pal = pal, values = ~prevIndex, opacity = 0.7, title = "Cumulative Rate",position = "bottomright")
   }
-  database$discrVariable <- discrVariable
-  # sort(discrVariable)
-  discrLevel <- as.numeric(quantile(discrVariable, probs = seq(0, 1, length.out = 11)))
-  
-  # getColor <- function(database) {
-  #   sapply(database$discrVariable, function(discrVariable) {
-  #     if(discrVariable <= 0) {
-  #       "darkgreen"
-  #     } else if(discrVariable <= discrLevel[6]) {
-  #       "orange"
-  #     } else if(discrVariable <= discrLevel[9]) {
-  #       "red"
-  #     }else if(discrVariable > discrLevel[9]) {
-  #       "black"
-  #     } })
-  # }
-  # 
-  getColor <- function(database) {
-    sapply(database$discrVariable, function(discrVariable) {
-      if(discrVariable <= 0) {
-        "green"
-      } else if(discrVariable <= discrLevel[6]) {
-        "yellow"
-      } else if(discrVariable <= discrLevel[9]) {
-        "orange"
-      }else if(discrVariable > discrLevel[9]) {
-        "red"
-      } })
+  else if(var=="totale_casi.x")
+  {
+    provMap <- leaflet(db_geo) %>%
+      # setView(lat=41.8719, lng=12.5674,zoom=5) %>%
+      fitBounds(lng1 = 9,lat1 =36 ,lng2 = 15,lat2 =43 ) %>%
+      addTiles() %>%
+      addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                  fillColor = ~pal(totale_casi.x),
+                  label = labels) %>%
+      # ~paste0("Cumulative Case", ": ", formatC(totale_casi.x, big.mark = ","))
+      addLegend(pal = pal, values = ~totale_casi.x, opacity = 0.7, title = "Cumulative Case",position = "bottomright")
+      
+    # provMap <- clearBounds(provMap)
   }
-  
-
-  setLabel <- paste(sep = "<br/>"
-                   , paste0("<b>", toupper(database$denominazione_provincia), "</b>")
-                   , paste0(" Cumulative cases: ", database$totale_casi.x)
-                   , paste0(" Cumulative rates: ", database$prevIndex))
-  # # 
-  
-  #Map building----
-  icons <- awesomeIcons(
-    icon = 'clipboard',
-    iconColor = 'white',
-    library = 'ion',
-    markerColor = getColor(database)
-  )
-
-  provMap <- leaflet(data = database) %>%
-    addTiles() %>%
-    addAwesomeMarkers(~long.x, ~lat.x
-                      , icon=icons
-                      , popup = ~setLabel
-                      , label = ~toupper(denominazione_provincia))
 
     
   #Map plot----
