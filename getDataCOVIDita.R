@@ -297,7 +297,49 @@ cumulDeathsProv <- function(mortiProv=mortiProvinces, pcmDataTot=pcmTOTData){
   
   cumDeathsProv$deathRates <- round((cumDeathsProv$decessi_tot/cumDeathsProv$popolazione)*100000, digits = 2)
   
+  # #add column Regione
+  {
+    listlazio <- c("Frosinone", "Latina", "Rieti", "Roma", "Viterbo")
+    listmarche <- c("Ancona", "Ascoli Piceno", "Fermo", "Macerata", "Pesaro e Urbino")
+    listsardegna <- c("Cagliari", "Nuoro", "Oristano", "Sassari", "Sud Sardegna")
+    listpuglia <- c("Bari", "Barletta-Andria-Trani", "Brindisi", "Lecce", "Taranto","Foggia")
+    listpiemonte <- c("Alessandria", "Asti", "Cuneo", "Novara", "Torino", "Verbano-Cusio-Ossola", "Vercelli","Biella")
+    listvalledaosta <- c("Aosta")
+    listtrentinoaltoadige <- c("Bolzano", "Trento")
+    listabruzzo <- c("Chieti", "L Aquila", "Pescara", "Teramo")
+    listbasilicata <- c("Matera", "Potenza")
+    listcalabria <- c("Catanzaro", "Cosenza", "Crotone", "Reggio di Calabria", "Vibo Valentia")
+    listsicilia <- c("Agrigento","Caltanissetta", "Catania", "Enna", "Messina", "Palermo", "Ragusa", "Siracusa", "Trapani")
+    listemiliaromagna <- c("Bologna", "Ferrara", "Forli-Cesena", "Modena", "Parma", "Piacenza", "Ravenna", "Reggio nell Emilia", "Rimini")
+    listmolise <- c("Campobasso", "Isernia")
+    listtoscana <- c("Arezzo", "Firenze", "Grosseto", "Livorno", "Lucca", "Massa Carrara", "Pisa", "Pistoia", "Prato", "Siena")
+    listumbria <- c("Perugia", "Terni")
+    listliguria <- c("Imperia","Savona")
+    listlombardia <- c("Cremona")
+    # #lombardia and liguria not reported becuase of missing data 
+    # 
+    # #add column Regione to our dataframe
+    cumDeathsProv$Regione <-ifelse (cumDeathsProv$provincia %in% listlazio, "Lazio",
+                              ifelse (cumDeathsProv$provincia %in% listsardegna, "Sardegna",
+                                      ifelse (cumDeathsProv$provincia %in% listpuglia, "Puglia",
+                                              ifelse (cumDeathsProv$provincia %in% listvalledaosta, "Valle d aosta",
+                                                      ifelse (cumDeathsProv$provincia %in% listtrentinoaltoadige, "Trentino alto adige",
+                                                              ifelse (cumDeathsProv$provincia %in% listpiemonte, "Piemonte",
+                                                                      ifelse (cumDeathsProv$provincia %in% listmarche, "Marche",
+                                                                              ifelse (cumDeathsProv$provincia %in% listabruzzo, "Abruzzo",
+                                                                                      ifelse (cumDeathsProv$provincia %in% listbasilicata, "Basilicata",
+                                                                                              ifelse (cumDeathsProv$provincia %in% listcalabria, "Calabria",
+                                                                                                      ifelse (cumDeathsProv$provincia %in% listsicilia, "Sicilia",
+                                                                                                              ifelse (cumDeathsProv$provincia %in% listemiliaromagna, "Emilia-Romagna",
+                                                                                                                      ifelse (cumDeathsProv$provincia %in% listmolise, "Molise",
+                                                                                                                              ifelse (cumDeathsProv$provincia %in% listtoscana, "Toscana",
+                                                                                                                                      ifelse (cumDeathsProv$provincia %in% listumbria, "Umbria",
+                                                                                                                                              ifelse(cumDeathsProv$provincia %in% listliguria,"Liguria",
+                                                                                                                                                     ifelse(cumDeathsProv$provincia %in% listlombardia,"Lombardia",NA)))))))))))))))))
+  }
+  
   cumDeathsProv<<-cumDeathsProv
+  
 }
 
 

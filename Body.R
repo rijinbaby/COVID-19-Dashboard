@@ -48,17 +48,43 @@ body <- dashboardBody(
             # tags$h2("Province Map"),
             fluidRow(
               
-              tabBox( title = "Covid-19 Parameter",width = 9,height = "550px",
-                      tabPanel("Cumulative Case",withSpinner(leafletOutput("provinceMap",height = "540px"))),
-                      tabPanel("Cumulative Rate",withSpinner(leafletOutput("provinceMap1",height = "540px")))
-              )
-              
-              ,column(width = 3,"Italy Overview")
-              # # infoBox("Italy Overview",color = "light-blue"),
-              ,valueBoxOutput("total_box",width =3 )
+              # column(width = 3,"Italy Overview"),
+              # infoBox("Italy Overview",color = "light-blue"),
+              valueBoxOutput("total_box",width =3 )
               ,valueBoxOutput("active_box",width =3)
               ,valueBoxOutput("Recovered_box",width =3)
               ,valueBoxOutput("deceased_box",width =3 )
+              
+              ,tabBox( title = "Covid-19 Parameter",width = 6,height = "700px",
+                      tabPanel("Cumulative Case",withSpinner(leafletOutput("provinceMap",height = "690px"))),
+                      tabPanel("Cumulative Rate",withSpinner(leafletOutput("provinceMap1",height = "690px")))
+              )
+              
+             
+              ,box(withSpinner(plotlyOutput("N_TS"))
+                   , width = 6
+                   , height = "425px"
+                   , status = "warning"
+                   , collapsible = F
+                   , solidHeader = T
+                   # ,style='padding-right:1px;padding-left:1px;'
+                   # ,title="XXXX"
+              )
+              
+              # ,column(width = 6,
+              #   box(width = NULL
+              #      , height = "275px"
+              #      , status = "info"
+              #      , h5(class = "text-muted"
+              #          , br()
+              #          , uiOutput(outputId = "textPres")
+              #          , uiOutput(outputId = "textDrates")
+              #          , style = "color : black;"
+              #     )
+              #     , downloadButton("ProvList1", "Province list")
+              # )
+              # )
+              
             )
               
               # box(leafletOutput("provinceMap")
@@ -101,8 +127,8 @@ body <- dashboardBody(
             ,fluidRow(
 
               box(withSpinner(plotlyOutput("Drates_TS"))
-                  , width = 6
-                  , height = "425px"
+                  , width = 12
+                  , height = "525px"
                   , status = "warning"
                   , collapsible = F
                   , solidHeader = F
@@ -110,59 +136,10 @@ body <- dashboardBody(
                   # ,title="XXXX"
                 )
 
-              ,box(plotlyOutput("N_TS")
-                  , width = 6
-                  , height = "425px"
-                  , status = "warning"
-                  , collapsible = F
-                  , solidHeader = T
-                  # ,style='padding-right:1px;padding-left:1px;'
-                  # ,title="XXXX"
-              )
+
             )
     ),
-              
-              # box(plotlyOutput("Drates_TS")
-              #     , width = 09, height = 425, status = "warning"
-              #     , collapsible = F, solidHeader = T)
-              
-              # ,column(width = 3,
-              #         box(width = NULL, height = 425
-              #             , status = "info"
-              #             #, background = "aqua"
-              #             , h5(class = "text-muted"
-              #                  , br()
-              #                  , uiOutput(outputId = "textDrates")
-              #                  , style = "color : black;"
-              #             )
-              #             , downloadButton("ProvList1", "Province list")
-              #         )
-              # )
-            # )
-            
-            # ,fluidRow(
-            #   box(plotlyOutput("N_TS")
-            #       , width = 9, height = 425, status = "warning"
-            #       , collapsible = F, solidHeader = T),
-            #   
-            #   column(width = 3,
-            #          box(width = NULL, height = 101
-            #              , status = "warning"
-            #              #, background = "aqua"
-            #              , sliderInput(inputId="selectDate2"
-            #                            , label="End date:"
-            #                            , min = rangeDate[1]
-            #                            , max = rangeDate[2]
-            #                            , value = rangeDate[2]
-            #                            , timeFormat="%Y-%m-%d")
-            #          )
-            #          
-            #          ,box(plotlyOutput("BoxPLTy")
-            #               , width = NULL, height = 303, status = "warning"
-            #               , collapsible = F, solidHeader = T)
-            #   )
-            # )
-    # ),
+        
     
   # "About" -------------------------------------------------------------------
   

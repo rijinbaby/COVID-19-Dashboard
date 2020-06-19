@@ -31,9 +31,18 @@ sidebar <- dashboardSidebar(
              , timeFormat="%d %b"
              ,width = "260px"
 )
+
+, selectInput(inputId='inReg'
+              , label='Regions:'
+              , selected="NULL"
+              , choices=c("NULL",sort(unique(pcmTOTData$denominazione_regione)))
+              , multiple=FALSE
+              # , selectize=TRUE
+              ,width = "260px")
+
 , selectInput(inputId='inProv'
               , label='Province:'
-              , selected=c("ALL")
+              # , selected=c("ALL")
               , choices=list( 
                 "Piemonte"=c("Alessandria", "Asti", "Biella", "Cuneo", "Novara", "Torino", "Verbano-Cusio-Ossola", "Vercelli")
                 , "Valle d'Aosta"=c("Aosta", "")

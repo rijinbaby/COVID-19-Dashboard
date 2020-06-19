@@ -81,6 +81,31 @@ server <- function(input, output, session){
   #"Provinces map"----
   {
     #"infobox"----
+    # output$total_box <- renderValueBox({
+    #   ifelse(info_box_data$confirmed_diff>=0
+    #          ,valueBox(paste0(info_box_data$confirmed," (+",info_box_data$confirmed_diff,")"), "Confirmed", icon = icon("user", lib = "glyphicon"),color = "red")
+    #          ,valueBox(paste0(info_box_data$confirmed," (",info_box_data$confirmed_diff,")"), "Confirmed", icon = icon("user", lib = "glyphicon"),color = "red")
+    #          )
+    # })
+    # output$active_box <- renderValueBox({
+    #   ifelse(info_box_data$active_diff>=0
+    #          ,valueBox(paste0(info_box_data$active," (+",info_box_data$active_diff,")"), "Active",color = "blue")
+    #          ,valueBox(paste0(info_box_data$active," (",info_box_data$active_diff,")"), "Active", color = "blue")
+    #          )
+    # })
+    # output$Recovered_box <- renderValueBox({
+    #   ifelse(info_box_data$recovered_diff>=0
+    #     ,valueBox(paste0(info_box_data$recovered," (+",info_box_data$recovered_diff,")" ), "Recovered", color = "green")
+    #     ,valueBox(paste0(info_box_data$recovered," (",info_box_data$recovered_diff,")" ), "Recovered", color = "green")
+    #     )
+    # })
+    # output$deceased_box <- renderValueBox({
+    #   ifelse(info_box_data$death_diff>=0
+    #     ,valueBox(paste0(info_box_data$death," (+",info_box_data$death_diff,")" ), "Deceased", color = "orange")
+    #     ,valueBox(paste0(info_box_data$death," (",info_box_data$death_diff,")" ), "Deceased", color = "orange")
+    #   )
+    # }) 
+    
     output$total_box <- renderValueBox({
       if(info_box_data$confirmed_diff>=0){
       valueBox(
@@ -92,7 +117,7 @@ server <- function(input, output, session){
             color = "red"
         )}
       })
-    
+
     output$active_box <- renderValueBox({
       if(info_box_data$active_diff>=0){
       valueBox(
@@ -104,13 +129,13 @@ server <- function(input, output, session){
             paste0(info_box_data$active," (",info_box_data$active_diff,")"), "Active",
             color = "blue"
         )}
-    })  
+    })
     output$Recovered_box <- renderValueBox({
       if(info_box_data$recovered_diff>=0){
       valueBox(
         paste0(info_box_data$recovered," (+",info_box_data$recovered_diff,")" ), "Recovered", color = "green"
         #icon = "fas fa-heart-broken"
-        
+
       )}
       else{
         valueBox(
@@ -184,14 +209,21 @@ server <- function(input, output, session){
       
       if(nrow(cumDeathsProv)>0){
         
-        if(is.null(input$inProv)){
-          cumDeathsProv <- cumDeathsProv
+        if ((input$inReg=="NULL")){
+          if(is.null(input$inProv)){
+            cumDeathsProv <- cumDeathsProv
+          }
+          
+          else{
+            prov <- input$inProv
+            cumDeathsProv <- cumDeathsProv[which(cumDeathsProv$provincia %in% prov),]
+          }
         }
+      else{
+        reg <- input$inReg
+        cumDeathsProv <- cumDeathsProv[which(cumDeathsProv$Regione %in% reg),]
+      }
         
-        else{
-          prov <- input$inProv
-          cumDeathsProv <- cumDeathsProv[which(cumDeathsProv$provincia %in% prov),]
-        }
       }
         DR_Plot <- death_rate_home(cumDeathsProv, "PrevIDX")
         
@@ -229,21 +261,27 @@ server <- function(input, output, session){
       prevIDXBound(pcmTOTData, rangeDays)
       
       if(nrow(totalPrevIDX)>0){
-        # title = "Cumulative rates in Italy and in the provinces with min and max values"
-        IdxPlot <- plot_ly(totalPrevIDX, x = ~data, y = ~natIDX, mode = 'lines', name = 'National') %>%
-          add_trace(y = ~upIDX, mode = 'lines', name = upperPR) %>%
-          add_trace(y = ~lowIDX, mode = 'lines', name = lowerPR) %>%
-          add_trace(y = ~natIDX, mode = 'lines', name = 'National') %>%
-          layout(title = "Comparing National Rate with worst and least affected Provinces"
-                 , xaxis = list(title = "Days")
-                 , yaxis = list (title = "Cumulative rates")
-				 , legend=list(title=list(text='Legend')))
-        
-        IdxPlot <- IdxPlot %>% layout(legend = list(x = 0.1, y = 0.9))
-
-        # withSpinner(print(IdxPlot))
-        print(IdxPlot)
+        IdxPlot <-  nat_min_max(totalPrevIDX)
       }
+      print(IdxPlot)
+      
+      
+#       if(nrow(totalPrevIDX)>0){
+#         # title = "Cumulative rates in Italy and in the provinces with min and max values"
+#         IdxPlot <- plot_ly(totalPrevIDX, x = ~data, y = ~natIDX, mode = 'lines', name = 'National') %>%
+#           add_trace(y = ~upIDX, mode = 'lines', name = upperPR) %>%
+#           add_trace(y = ~lowIDX, mode = 'lines', name = lowerPR) %>%
+#           add_trace(y = ~natIDX, mode = 'lines', name = 'National') %>%
+#           layout(title = "Comparing National Rate with worst and least affected Provinces"
+#                  , xaxis = list(title = "Days")
+#                  , yaxis = list (title = "Cumulative rates")
+# 				 , legend=list(title=list(text='Legend')))
+#         
+#         IdxPlot <- IdxPlot %>% layout(legend = list(x = 0.1, y = 0.9))
+# 
+#         withSpinner((IdxPlot))
+#         # print(IdxPlot)
+#       }
 
     })
 
@@ -251,29 +289,29 @@ server <- function(input, output, session){
 
     #Last date Boxplot
 
-    output$BoxPLTy <- renderPlotly({
-
-      rangeDays <- input$selectDate2
-
-      lastPrevIDX <- pcmTOTData %>%
-        ungroup() %>%
-        filter(data==rangeDays) %>%
-        select(prevIndex)
-
-
-      if(nrow(lastPrevIDX)>0){
-
-        lastPrIDX <- lastPrevIDX$prevIndex/sqrt(sum(lastPrevIDX$prevIndex^2))
-
-        IdxBox <- plot_ly(y = lastPrIDX, type = "box") %>%
-          layout(autosize = T, height = 290
-                 , title = "Normalized rates")
-
-        print(IdxBox)
-
-      }
-
-    })
+    # output$BoxPLTy <- renderPlotly({
+    # 
+    #   rangeDays <- input$selectDate2
+    # 
+    #   lastPrevIDX <- pcmTOTData %>%
+    #     ungroup() %>%
+    #     filter(data==rangeDays) %>%
+    #     select(prevIndex)
+    # 
+    # 
+    #   if(nrow(lastPrevIDX)>0){
+    # 
+    #     lastPrIDX <- lastPrevIDX$prevIndex/sqrt(sum(lastPrevIDX$prevIndex^2))
+    # 
+    #     IdxBox <- plot_ly(y = lastPrIDX, type = "box") %>%
+    #       layout(autosize = T, height = 290
+    #              , title = "Normalized rates")
+    # 
+    #     print(IdxBox)
+    # 
+    #   }
+    # 
+    # })
 
   }
 

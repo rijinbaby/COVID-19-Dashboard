@@ -10,6 +10,25 @@ library(plotly)
 # database = cumDeathsProv
 
 
+# national , min max ------------------------------------------------------
+
+nat_min_max <- function(totalPrevIDX){
+  options(warn=-1)
+  
+  IdxPlot <- plot_ly(totalPrevIDX, x = ~data, y = ~natIDX, mode = 'lines', name = 'National') %>%
+    add_trace(y = ~upIDX, mode = 'lines', name = upperPR) %>%
+    add_trace(y = ~lowIDX, mode = 'lines', name = lowerPR) %>%
+    add_trace(y = ~natIDX, mode = 'lines', name = 'National') %>%
+    layout(title = "Comparing National Rate with worst and least affected Provinces"
+           , xaxis = list(title = "Days")
+           , yaxis = list (title = "Cumulative rates")
+           , legend=list(title=list(text='Legend')))
+  
+  IdxPlot <- IdxPlot %>% layout(legend = list(x = 0.1, y = 0.9))
+  
+  return(print(x = IdxPlot))
+}
+
 # death_rate_home chart ---------------------------------------------------
 
 death_rate_home <- function(database, variable){
@@ -21,30 +40,52 @@ death_rate_home <- function(database, variable){
     
     database <- database[,c("provincia",  "data", "deathRates")]
     
-    colnames(database) <- c("Province", "Date", "Death rates")
+    colnames(database) <- c("Province", "Date", "Death_rates")
+    
+    n_plot <- database %>%
+      plotly::plot_ly()
+    
+    n_plot <- n_plot %>%
+      plotly::add_trace(
+        x = ~Date, 
+        y=~Death_rates,
+        type='scatter',
+        mode='lines',
+        color=~Province,
+        text=~Province,
+        hovertemplate = paste(
+          "%{text}<br>",
+          "Date: %{x}<br>",
+          "Death Rate.: %{y}")) %>% 
+       plotly::layout(title = "Province Level Death Rate Comparission")
+        
+    n_plot <- n_plot %>% layout(legend = list(x = 0.1, y = 0.9))
+      
+      
+    return(print(x = n_plot))
     
     # title=paste0("Death rates until the "
     #              , paste0(str_split(untilDate, "-")[[1]][3]
     #                       , "/",  str_split(untilDate, "-")[[1]][2])
     #              , " at provincial level")) +
     
-    Plot<-ggplot(data=database, aes(x=Date, color=Province)) +
-      geom_line(aes(y=`Death rates`)) +
-      geom_point(aes(y=`Death rates`), size=1) +
-      labs(
-        x = "Dates",
-        #y = "Death rates",
-        color="Provinces",
-        title=paste0("Province Level Death Rates")) +
-      theme(legend.position = "none"
-            ,legend.title = element_text(colour="black", face = "bold"))
-    
-    GGPlotly<-ggplotly(Plot)
-    
-    GGPrlotly <- GGPlotly %>%
-      layout(xaxis = list(visible=FALSE))
-    
-    return(print(x = GGPrlotly))
+    # Plot<-ggplot(data=database, aes(x=Date, color=Province)) +
+    #   geom_line(aes(y=`Death rates`)) +
+    #   geom_point(aes(y=`Death rates`), size=1) +
+    #   labs(
+    #     x = "Dates",
+    #     #y = "Death rates",
+    #     color="Provinces",
+    #     title=paste0("Province Level Death Rates")) +
+    #   theme(legend.position = "none"
+    #         ,legend.title = element_text(colour="black", face = "bold"))
+    # 
+    # GGPlotly<-ggplotly(Plot)
+    # 
+    # GGPrlotly <- GGPlotly %>%
+    #   layout(xaxis = list(visible=FALSE))
+    # 
+    # return(print(x = GGPrlotly))
   }
 
 deathTS <- function(database, variable){
