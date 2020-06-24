@@ -16,6 +16,7 @@ italy_data <- function(){
   pcm_data <- read.csv("https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale.csv") 
   
   pcm_data$data<-as.Date(pcm_data$data, "%Y-%m-%d")
+  # pcm_data <- pcm_data[which(pcm_data$data<=ip_date),]
   last_day <- max(pcm_data$data)
   last_day_bf <- last_day - 1
   

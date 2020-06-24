@@ -20,7 +20,9 @@ sidebar <- dashboardSidebar(
 
 # about -------------------------------------------------------------------
 
-             # ,menuItem("About", tabName = "About", icon = icon("user"))
+             ,menuItem("About", tabName = "About", icon = icon("user"))
+
+# sidebar input -----------------------------------------------------------
 
 ,sliderInput(inputId="selectDate1"
              , label="Select Mapping Date:"
@@ -33,12 +35,16 @@ sidebar <- dashboardSidebar(
 )
 
 , selectInput(inputId='inReg'
-              , label='Regions:'
-              , selected="NULL"
-              , choices=c("NULL",sort(unique(pcmTOTData$denominazione_regione)))
+              , label='Region:'
+              , selected=FALSE
+              , choices=list(
+                "Select a Region"=c("Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino Alto Adige","Umbria","Valle d'Aosta","Veneto")
+              )
               , multiple=FALSE
-              # , selectize=TRUE
+              , selectize=FALSE
               ,width = "260px")
+# "Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino Alto Adige","Umbria","Valle d'Aosta","Veneto"
+
 
 , selectInput(inputId='inProv'
               , label='Province:'

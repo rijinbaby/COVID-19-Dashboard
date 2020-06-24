@@ -60,6 +60,17 @@ body <- dashboardBody(
                       tabPanel("Cumulative Rate",withSpinner(leafletOutput("provinceMap1",height = "690px")))
               )
               
+              # ,column(width = 6
+              # ,box(width = NULL, height = 100
+              #      ,sliderInput(inputId="selectDate1"
+              #              , label="Select Mapping Date:"
+              #              , min = rangeDate[1]
+              #              , max = rangeDate[2]
+              #              , value = rangeDate[2]
+              #              #, timeFormat="%Y-%m-%d"
+              #              , timeFormat="%d %b"
+              #              # ,width = 6
+              # )))
              
               ,box(withSpinner(plotlyOutput("N_TS"))
                    , width = 6
@@ -73,11 +84,11 @@ body <- dashboardBody(
               
               # ,column(width = 6,
                 ,box(width = 6
-                   , height = "250px"
+                   , height = "300px"
                    # , status = "info"
                    , h5(class = "text-muted"
                        , br()
-                       , uiOutput(outputId = "textPres")
+                       #, uiOutput(outputId = "textPres")
                        , uiOutput(outputId = "textDrates")
                        , style = "color : black;"
                   )
@@ -128,7 +139,7 @@ body <- dashboardBody(
 
               box(withSpinner(plotlyOutput("Drates_TS"))
                   , width = 12
-                  , height = "525px"
+                  , height = "450px"
                   # , status = "warning"
                   , collapsible = F
                   , solidHeader = F
@@ -144,76 +155,84 @@ body <- dashboardBody(
   # "About" -------------------------------------------------------------------
   
   
-  # tabItem(tabName = "About",
-  #         tags$h2("About"),
-  #         fluidRow(
-  #           box(width = NULL#, height = 245
-  #               , status = "info"
-  #               #, background = "aqua"
-  #               , h5(class = "text-muted"
-  #                    , br()
-  #                    , uiOutput(outputId = "textPres")
-  #                    , uiOutput(outputId = "textDrates")
-  #                    , style = "color : black;"
-  #               )
-  #               , downloadButton("ProvList1", "Province list")
-  #           )
-  #         )
-  # ),
+  tabItem(tabName = "About",
+          tags$h2("About"),
+          fluidRow(
+            box(width = NULL#, height = 245
+                , status = "info"
+                #, background = "aqua"
+                , h5(class = "text-muted"
+                     , br()
+                     , uiOutput(outputId = "textPres")
+                     # , uiOutput(outputId = "textDrates")
+                     , style = "color : black;"
+                )
+                # , downloadButton("ProvList1", "Province list")
+            )
+          )
+  ),
   
     # "Time Series"----
-    tabItem(tabName = "TimeSeries",
-            tags$h2("Time Series")
+    
+  tabItem(tabName = "TimeSeries",
+            # tags$h2("Time Series")
             
-            ,fluidRow(
-              box(plotlyOutput("P_TS")
-                  , width = 9, height = 425
-                  , status = "info"
-                  #, background = "aqua"
-                  , collapsible = F, solidHeader = T
-              ),
+          fluidRow(
+            
+          tabBox( title = "Time Series Data",width = 9,height = "425px",
+                   tabPanel("Cumulative Case",withSpinner(plotlyOutput("P_TS"))),
+                   tabPanel("Cumulative Rate",withSpinner(plotlyOutput("P_TS2")))
+          )
+                   
+            
+              # box(plotlyOutput("P_TS")
+              #     , width = 9, height = 425
+              #     , status = "info"
+              #     #, background = "aqua"
+              #     , collapsible = F, solidHeader = T
+              # ),
               
-              column(width = 3,
-                     box(width = NULL, height = 202
-                         , status = "info"
-                         #, background = "aqua"
-                         , selectInput(inputId='inProv'
-                                       , label='Province:'
-                                       , selected=c("Torino","Cremona", "Piacenza", "Bergamo", "Milano")
-                                       , choices=list(
-                                         "Piemonte"=c("Alessandria", "Asti", "Biella", "Cuneo", "Novara", "Torino", "Verbano-Cusio-Ossola", "Vercelli")
-                                         , "Valle d'Aosta"=c("Aosta", "")
-                                         , "Liguria"=c("Genova", "Imperia", "La Spezia", "Savona")
-                                         , "Lombardia"=c("Bergamo", "Brescia", "Como", "Cremona", "Lecco", "Lodi", "Mantova", "Milano", "Monza e della Brianza", "Pavia", "Sondrio", "Varese")
-                                         , "Trentino Alto Adige"=c("Bolzano", "Trento")
-                                         , "Veneto"=c("Belluno", "Padova", "Rovigo", "Treviso", "Venezia", "Verona", "Vicenza")
-                                         , "Friuli Venezia Giulia"=c("Gorizia", "Pordenone", "Trieste", "Udine")
-                                         , "Emilia Romagna"=c("Bologna", "Ferrara", "Forli-Cesena", "Modena", "Parma", "Piacenza", "Ravenna", "Reggio nell'Emilia", "Rimini")
-                                         , "Toscana"=c("Arezzo", "Firenze", "Grosseto", "Livorno", "Lucca", "Massa Carrara", "Pisa", "Pistoia", "Prato", "Siena")
-                                         , "Umbria"=c("Perugia", "Terni")
-                                         , "Marche"=c("Ancona", "Ascoli Piceno", "Fermo", "Macerata", "Pesaro e Urbino")
-                                         , "Lazio"=c("Frosinone", "Latina", "Rieti", "Roma", "Viterbo")
-                                         , "Abruzzo"=c("Chieti", "L'Aquila", "Pescara", "Teramo" )
-                                         , "Molise"=c("Campobasso", "Isernia")
-                                         , "Campania"=c("Avellino", "Benevento", "Caserta", "Napoli", "Salerno")
-                                         , "Puglia"=c("Bari", "Barletta-Andria-Trani", "Brindisi", "Foggia", "Lecce", "Taranto")
-                                         , "Basilicata"=c("Matera", "Potenza")
-                                         , "Calabria"=c("Catanzaro", "Cosenza", "Crotone", "Reggio di Calabria", "Vibo Valentia")
-                                         , "Sicilia"=c("Agrigento", "Caltanissetta", "Catania", "Enna", "Messina", "Palermo", "Ragusa", "Siracusa", "Trapani")
-                                         , "Sardegna"=c("Cagliari", "Nuoro", "Oristano", "Sassari", "Sud Sardegna")
-                                       )
-                                       , multiple=TRUE
-                                       , selectize=TRUE)
-                         , selectInput(inputId='inVarP'
-                                       , label='Variable:'
-                                       , selected=c("Cumulative cases")
-                                       , choices=c("Cumulative cases", "Cumulative rates")
-                                       , multiple=FALSE
-                                       , selectize=TRUE)
-                     )
+              # ,column(width = 3,
+              #        box(width = NULL, height = 202
+              #            , status = "info"
+              #            #, background = "aqua"
+              #            , selectInput(inputId='inProv'
+              #                          , label='Province:'
+              #                          , selected=c("Torino","Cremona", "Piacenza", "Bergamo", "Milano")
+              #                          , choices=list(
+              #                            "Piemonte"=c("Alessandria", "Asti", "Biella", "Cuneo", "Novara", "Torino", "Verbano-Cusio-Ossola", "Vercelli")
+              #                            , "Valle d'Aosta"=c("Aosta", "")
+              #                            , "Liguria"=c("Genova", "Imperia", "La Spezia", "Savona")
+              #                            , "Lombardia"=c("Bergamo", "Brescia", "Como", "Cremona", "Lecco", "Lodi", "Mantova", "Milano", "Monza e della Brianza", "Pavia", "Sondrio", "Varese")
+              #                            , "Trentino Alto Adige"=c("Bolzano", "Trento")
+              #                            , "Veneto"=c("Belluno", "Padova", "Rovigo", "Treviso", "Venezia", "Verona", "Vicenza")
+              #                            , "Friuli Venezia Giulia"=c("Gorizia", "Pordenone", "Trieste", "Udine")
+              #                            , "Emilia Romagna"=c("Bologna", "Ferrara", "Forli-Cesena", "Modena", "Parma", "Piacenza", "Ravenna", "Reggio nell'Emilia", "Rimini")
+              #                            , "Toscana"=c("Arezzo", "Firenze", "Grosseto", "Livorno", "Lucca", "Massa Carrara", "Pisa", "Pistoia", "Prato", "Siena")
+              #                            , "Umbria"=c("Perugia", "Terni")
+              #                            , "Marche"=c("Ancona", "Ascoli Piceno", "Fermo", "Macerata", "Pesaro e Urbino")
+              #                            , "Lazio"=c("Frosinone", "Latina", "Rieti", "Roma", "Viterbo")
+              #                            , "Abruzzo"=c("Chieti", "L'Aquila", "Pescara", "Teramo" )
+              #                            , "Molise"=c("Campobasso", "Isernia")
+              #                            , "Campania"=c("Avellino", "Benevento", "Caserta", "Napoli", "Salerno")
+              #                            , "Puglia"=c("Bari", "Barletta-Andria-Trani", "Brindisi", "Foggia", "Lecce", "Taranto")
+              #                            , "Basilicata"=c("Matera", "Potenza")
+              #                            , "Calabria"=c("Catanzaro", "Cosenza", "Crotone", "Reggio di Calabria", "Vibo Valentia")
+              #                            , "Sicilia"=c("Agrigento", "Caltanissetta", "Catania", "Enna", "Messina", "Palermo", "Ragusa", "Siracusa", "Trapani")
+              #                            , "Sardegna"=c("Cagliari", "Nuoro", "Oristano", "Sassari", "Sud Sardegna")
+              #                          )
+              #                          , multiple=TRUE
+              #                          , selectize=TRUE)
+              #            , selectInput(inputId='inVarP'
+              #                          , label='Variable:'
+              #                          , selected=c("Cumulative cases")
+              #                          , choices=c("Cumulative cases", "Cumulative rates")
+              #                          , multiple=FALSE
+              #                          , selectize=TRUE)
+                     # )
                      
-                     , box(width = NULL, height = 202
-                           , status = "info"
+                     , box(width = 3, height = "460px"
+                           # , status = "info"
                            #, background = "aqua"
                            , h5(class = "text-muted"
                                 , br()
@@ -222,87 +241,103 @@ body <- dashboardBody(
                            )
                            , downloadButton("PLOT1", "Read more")
                      )
-                     
-              )
+            
+              # )
             )
             
-            ,fluidRow(
-              box(plotlyOutput("R_TS1")
-                  , width = 9, height = 425
-                  , status = "info"
-                  #, background = "aqua"
-                  , collapsible = F, solidHeader = T
-              )
+            # ,fluidRow(
+            #   box(plotlyOutput("R_TS1")
+            #       , width = 9, height = 425
+            #       , status = "info"
+            #       #, background = "aqua"
+            #       , collapsible = F, solidHeader = T
+            #   )
               
               # tabBox(
               #   width = 9, height = 425,
               #   # The id lets us use input$tabset1 on the server to find the current tab
               #   tabPanel("Province values", plotlyOutput("R_TS1"))
               #   ,tabPanel("Region Values", 'plotlyOutput("R_TS2")')
+              # ),
+              
+              # column(width = 3,
+                      # box(width = NULL, height = 202
+                      #     , status = "info"
+                      #     #, background = "aqua"
+                      #     , selectInput(inputId='inReg'
+                      #                   , label='Regions:'
+                      #                   , selected="Lombardia"
+                      #                   , choices=sort(unique(pcmTOTData$denominazione_regione))
+                      #                   , multiple=FALSE
+                      #                   , selectize=TRUE)
+                      #     , selectInput(inputId='inVarR'
+                      #                   , label='Variable:'
+                      #                   , selected=c("Cumulative cases")
+                      #                   , choices=c("Cumulative cases", "Cumulative rates")
+                      #                   , multiple=FALSE
+                      #                   , selectize=TRUE)
+                      # ),
+                      
+            #           box(width = NULL, height = 202
+            #                 , status = "info"
+            #                 #, background = "aqua"
+            #                 , h5(class = "text-muted"
+            #                      , br()
+            #                      , uiOutput(outputId = "textPLOT2")
+            #                      , style = "color : black;"
+            #                 )
+            #                 , downloadButton("PLOT2", "Read more")
+            #           )
+            #   )
+            # )
+            
+            ,fluidRow(
+              column(width = 12,
+              tabBox( title = "P1",width = 6,height = "425px",
+                      tabPanel("Cumulative Case",withSpinner(plotlyOutput("R_TS2"))),
+                      tabPanel("Cumulative Rate",withSpinner(plotlyOutput("R_TS2_2")))
+              )
+              
+              ,tabBox( title = "P2",width = 6,height = "425px",
+                      tabPanel("Cumulative Case",withSpinner(plotlyOutput("R_TS3"))),
+                      tabPanel("Cumulative Rate",withSpinner(plotlyOutput("R_TS3_2")))
+              )
+              )
+              # box(plotlyOutput("R_TS2")
+              #     , width = 6, height = 425
+              #     , status = "info"
+              #     #, background = "aqua"
+              #     , collapsible = F, solidHeader = T
+              # )
+              # 
+              # ,box(plotlyOutput("R_TS3"),
+              #      width = 6, height = 425
+              #      , status = "info"
+              #      #, background = "aqua"
+              #      , collapsible = F, solidHeader = T
               # )
               
-              ,column(width = 3,
-                      box(width = NULL, height = 202
-                          , status = "info"
-                          #, background = "aqua"
-                          , selectInput(inputId='inReg'
-                                        , label='Regions:'
-                                        , selected="Lombardia"
-                                        , choices=sort(unique(pcmTOTData$denominazione_regione))
-                                        , multiple=FALSE
-                                        , selectize=TRUE)
-                          , selectInput(inputId='inVarR'
-                                        , label='Variable:'
-                                        , selected=c("Cumulative cases")
-                                        , choices=c("Cumulative cases", "Cumulative rates")
-                                        , multiple=FALSE
-                                        , selectize=TRUE)
-                      )
-                      
-                      , box(width = NULL, height = 202
-                            , status = "info"
-                            #, background = "aqua"
-                            , h5(class = "text-muted"
-                                 , br()
-                                 , uiOutput(outputId = "textPLOT2")
-                                 , style = "color : black;"
-                            )
-                            , downloadButton("PLOT2", "Read more")
-                      )
-              )
             )
-            
+          
+          # ,fluidRow(
+          #   column(width = 12,
+          #          box(title = "ISTAT DATA"))
+          # )  
+          
             ,fluidRow(
-              box(plotlyOutput("R_TS2")
-                  , width = 6, height = 425
-                  , status = "info"
-                  #, background = "aqua"
-                  , collapsible = F, solidHeader = T
-              )
-              
-              ,box(plotlyOutput("R_TS3"),
-                   width = 6, height = 425
-                   , status = "info"
-                   #, background = "aqua"
-                   , collapsible = F, solidHeader = T
-              )
-              
-            )
-            
-            ,fluidRow(
-              box(plotlyOutput("D_TS")
+              box(withSpinner(plotlyOutput("D_TS"))
                   , width = 9, height = 425
-                  , status = "info"
+                  # , status = "info"
                   #, background = "aqua"
                   , collapsible = F, solidHeader = T
               ),
               
               column(width = 3,
-                     box(width = NULL, height = 202
+                     box(width = NULL, height = 152
                          , status = "info"
                          #, background = "aqua"
                          , selectInput(inputId='inProvD'
-                                       , label='Province:'
+                                       , label='Select One Province:'
                                        , selected="Torino"
                                        , choices=list(
                                          "Piemonte"=c("Alessandria", "Asti", "Biella", "Cuneo", "Novara", "Torino", "Verbano-Cusio-Ossola", "Vercelli")
@@ -330,7 +365,7 @@ body <- dashboardBody(
                                        , selectize=TRUE)
                      )
                      
-                     , box(width = NULL, height = 202
+                     , box(width = NULL, height = 252
                            , status = "info"
                            #, background = "aqua"
                            , h5(class = "text-muted"

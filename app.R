@@ -106,14 +106,16 @@ server <- function(input, output, session){
     #   )
     # }) 
     
+      # ip_date <- input$selectDate1
+      # info_box_data <- italy_data(ip_date)
     output$total_box <- renderValueBox({
       if(info_box_data$confirmed_diff>=0){
       valueBox(
-        paste0(info_box_data$confirmed," (+",info_box_data$confirmed_diff,")"), "Confirmed", icon = icon("user", lib = "glyphicon"),color = "red"
+        paste0(info_box_data$confirmed," (+",info_box_data$confirmed_diff,")"), paste("CONFIRMED    ","Last Update:",rangeDate[2]), icon = icon("user", lib = "glyphicon"),color = "red"
         )}
         else{
           valueBox(
-            paste0(info_box_data$confirmed," (",info_box_data$confirmed_diff,")"), "Confirmed", icon = icon("user", lib = "glyphicon"),
+            paste0(info_box_data$confirmed," (",info_box_data$confirmed_diff,")"), paste("CONFIRMED    ","Last Update:",rangeDate[2]), icon = icon("user", lib = "glyphicon"),
             color = "red"
         )}
       })
@@ -121,37 +123,37 @@ server <- function(input, output, session){
     output$active_box <- renderValueBox({
       if(info_box_data$active_diff>=0){
       valueBox(
-        paste0(info_box_data$active," (+",info_box_data$active_diff,")"), "Active",color = "blue"
+        paste0(info_box_data$active," (+",info_box_data$active_diff,")"), "ACTIVE",color = "blue"
           #icon = "fas fa-ambulance"
         )}
         else{
           valueBox(
-            paste0(info_box_data$active," (",info_box_data$active_diff,")"), "Active",
+            paste0(info_box_data$active," (",info_box_data$active_diff,")"), "ACTIVE",
             color = "blue"
         )}
     })
     output$Recovered_box <- renderValueBox({
       if(info_box_data$recovered_diff>=0){
       valueBox(
-        paste0(info_box_data$recovered," (+",info_box_data$recovered_diff,")" ), "Recovered", color = "green"
+        paste0(info_box_data$recovered," (+",info_box_data$recovered_diff,")" ), "RECOVERED", color = "green"
         #icon = "fas fa-heart-broken"
 
       )}
       else{
         valueBox(
-          paste0(info_box_data$recovered," (",info_box_data$recovered_diff,")" ), "Recovered", color = "green"
+          paste0(info_box_data$recovered," (",info_box_data$recovered_diff,")" ), "RECOVERED", color = "green"
           #icon = "fas fa-heart-broken"
       )}
     })
     output$deceased_box <- renderValueBox({
       if(info_box_data$death_diff>=0){
       valueBox(
-        paste0(info_box_data$death," (+",info_box_data$death_diff,")" ), "Deceased", color = "orange"
+        paste0(info_box_data$death," (+",info_box_data$death_diff,")" ), "DECEASED", color = "orange"
         #icon = "fas fa-heart-broken"
       )}
       else{
         valueBox(
-          paste0(info_box_data$death," (",info_box_data$death_diff,")" ), "Deceased", color = "orange"
+          paste0(info_box_data$death," (",info_box_data$death_diff,")" ), "DECEASED", color = "orange"
           #icon = "fas fa-heart-broken"
         )}
       })
@@ -190,15 +192,21 @@ server <- function(input, output, session){
     })
     
     output$textPres <- renderText({
-      HTML(paste0("<b>Dashboard developed by: L.Ferrari, G.Gerardi, G.Manzi, A.Micheletti, F.Nicolussi, S.Salini</b>
+      HTML(paste0("<b>COVID-Pro: a province-based analysis for Italy<b>
                   <br />
                   <br />
-                   Cumulative rates are the ratio between the cumulative cases and the total population for the selected province multiplied by 100000.
-                  <br />
-                   The results are computed using the Italian Civil Protection dataset.
-                  <br />
-                  <br />
-                   We thank students R. Baby, A. Iordache, A. Singh and N. Velardo for their contribution"))
+                  The COVID-19 outbreak in Italy has spread mainly in northern regions, particularly in Lombardy. 
+                  However, even within the same region the virus has spread irregularly from province to province, producing real epicenters of infection in some provinces but also affecting other areas with relatively lower intensity.
+
+                  In this dashboard we present some tools for analyzing and visualizing the COVID-19 outbreak in 
+                  Italy at a provincial (NUTS-3) level by integrating official data from the Italian Ministry of 
+                  Health with data extracted from official press conferences of regional health authorities, 
+                  especially regarding the number of deaths due to the Covid-19 which is not currently reported in 
+                  official data releases. An adjusted time-dependent SIRD model is used to predict the epidemics behavior 
+                  in the near future.
+                  
+                  Dashboard developed by: L.Ferrari, G.Gerardi, G.Manzi, A.Micheletti, F.Nicolussi, S.Salini
+                  We thank students R. Baby, A. Iordache, A. Singh and N. Velardo for their contribution"))
     })
     
    
@@ -209,20 +217,19 @@ server <- function(input, output, session){
       
       if(nrow(cumDeathsProv)>0){
         
-        if ((input$inReg=="NULL")){
-          if(is.null(input$inProv)){
-            cumDeathsProv <- cumDeathsProv
-          }
-          
-          else{
-            prov <- input$inProv
-            cumDeathsProv <- cumDeathsProv[which(cumDeathsProv$provincia %in% prov),]
-          }
+        if (is.null(input$inReg)&is.null(input$inProv)){
+           cumDeathsProv <- cumDeathsProv
         }
-      else{
-        reg <- input$inReg
-        cumDeathsProv <- cumDeathsProv[which(cumDeathsProv$Regione %in% reg),]
-      }
+        
+        else if((is.null(input$inReg)&(!is.null(input$inProv)))|((!is.null(input$inReg))&(!is.null(input$inProv)))){
+          prov <- input$inProv
+          # updateSelectInput(input$inReg,NULL)
+          cumDeathsProv <- cumDeathsProv[which(cumDeathsProv$provincia %in% prov),]
+        }
+        else if(!(is.null(input$inReg))&is.null(input$inProv)){
+          reg <- input$inReg
+          cumDeathsProv <- cumDeathsProv[which(cumDeathsProv$Regione %in% reg),]
+        }
         
       }
         DR_Plot <- death_rate_home(cumDeathsProv, "PrevIDX")
@@ -234,14 +241,17 @@ server <- function(input, output, session){
     )
     
     output$textDrates <- renderText({
-      HTML(paste0("<b><em>Death rates</em></b>"
-                  , "<b> are the ratio between the cumulative death cases and the total population for the selected provinces multiplied by 100000.</b>"
-                  ,"<br />
-                  <br />"
-                  ,"To build this time series we used data collected by scraping the daily press conferences and Covid-19 bulletins provided by regions."
-                  ,"<br />
-                  <br />"
-                  ,"<b> Indeed, the official data repository of the Italian Ministry of Health and the Civil Protection Agency does not provide Covid-19 data on the daily number of deaths at a provincial level, but only on a regional level.</b>"))
+      HTML(paste0("<b><em>Cumulative Rate</em></b>
+                  <b>are the ratio between the cumulative cases and the total population for the selected province multiplied by 100000.</b>
+                  <br />
+                  The results are computed using the Italian Civil Protection dataset.
+                  <br />
+                   <br />
+                  <b><em>Death Rate</em></b>
+                   <b> are the ratio between the cumulative death cases and the total population for the selected provinces multiplied by 100000.</b>
+                   To build this time series we used data collected by scraping the daily press conferences and Covid-19 bulletins provided by regions.
+                   <br />
+                   <b> Indeed, the official data repository of the Italian Ministry of Health and the Civil Protection Agency does not provide Covid-19 data on the daily number of deaths at a provincial level, but only on a regional level.</b>"))
     })
 
     output$ProvList1 <- downloadHandler(
@@ -319,26 +329,82 @@ server <- function(input, output, session){
   {
     # Plot the provinces time series----
     output$P_TS <- renderPlotly({
-
+      
+      # selectDate <- input$selectDate1
+      #   # selectDate="2020-05-26"
+      # timeSeriesCOVIDpr <- pcmTOTData[which(pcmTOTData$data<=selectDate),]
+      
+      reg <- input$inReg
       varTSp <- input$inProv
       #   varTSp="Piacenza"
-      varTSdata <- switch(input$inVarP,
-                          "Cumulative cases" = "Cases",
-                          "Cumulative rates" = "PrevIDX")
-      #   varTSdata="Cases"
-      timeSeriesCOVIDpr <- subset(pcmTOTData
-                                  , (denominazione_provincia%in%c(varTSp)))%>%
-        ungroup() %>%
-        select(denominazione_regione
-               , denominazione_provincia
-               , data
-               , totale_casi.x
-               , prevIndex)%>%
-        group_by(denominazione_regione
+      # varTSdata <- switch(input$inVarP,
+      #                     "Cumulative cases" = "Cases",
+      #                     "Cumulative rates" = "PrevIDX")
+      varTSdata="Cases"
+      
+      
+      if (is.null(input$inReg)&is.null(input$inProv)){
+        timeSeriesCOVIDpr <- pcmTOTData %>%
+            ungroup() %>%
+            select(denominazione_regione
+                   , denominazione_provincia
+                   , data
+                   , totale_casi.x
+                   , prevIndex)%>%
+            group_by(denominazione_regione
+                     , denominazione_provincia
+                     , data
+                     , totale_casi.x
+                     , prevIndex)
+        }
+
+        else if((is.null(input$inReg)&(!is.null(input$inProv)))|((!is.null(input$inReg))&(!is.null(input$inProv)))){
+          
+          timeSeriesCOVIDpr <- subset(pcmTOTData
+                                      , (denominazione_provincia%in%c(varTSp)))%>%
+            ungroup() %>%
+            select(denominazione_regione
+                   , denominazione_provincia
+                   , data
+                   , totale_casi.x
+                   , prevIndex)%>%
+            group_by(denominazione_regione
+                     , denominazione_provincia
+                     , data
+                     , totale_casi.x
+                     , prevIndex)
+        }
+      else if(!(is.null(input$inReg))&is.null(input$inProv)){
+        
+        timeSeriesCOVIDpr <- subset(pcmTOTData
+                                    , (denominazione_regione%in%c(reg)))%>%
+          ungroup() %>%
+          select(denominazione_regione
                  , denominazione_provincia
                  , data
                  , totale_casi.x
-                 , prevIndex)
+                 , prevIndex)%>%
+          group_by(denominazione_regione
+                   , denominazione_provincia
+                   , data
+                   , totale_casi.x
+                   , prevIndex)
+      }
+      
+      
+      # timeSeriesCOVIDpr <- subset(pcmTOTData
+      #                             , (denominazione_provincia%in%c(varTSp)))%>%
+      #   ungroup() %>%
+      #   select(denominazione_regione
+      #          , denominazione_provincia
+      #          , data
+      #          , totale_casi.x
+      #          , prevIndex)%>%
+      #   group_by(denominazione_regione
+      #            , denominazione_provincia
+      #            , data
+      #            , totale_casi.x
+      #            , prevIndex)
 
       if(nrow(timeSeriesCOVIDpr)>0){
 
@@ -348,6 +414,94 @@ server <- function(input, output, session){
 
       }
 
+    })
+    
+    output$P_TS2 <- renderPlotly({
+      
+      # selectDate <- input$selectDate1
+      # #   selectDate="2020-03-26"
+      # timeSeriesCOVIDpr <- pcmTOTData[which(pcmTOTData$data<=selectDate),]
+      
+      reg <- input$inReg
+      varTSp <- input$inProv
+      #   varTSp="Piacenza"
+      # varTSdata <- switch(input$inVarP,
+      #                     "Cumulative cases" = "Cases",
+      #                     "Cumulative rates" = "PrevIDX")
+      
+      varTSdata="PrevIDX"
+      
+      if (is.null(input$inReg)&is.null(input$inProv)){
+        timeSeriesCOVIDpr <- pcmTOTData %>%
+          ungroup() %>%
+          select(denominazione_regione
+                 , denominazione_provincia
+                 , data
+                 , totale_casi.x
+                 , prevIndex)%>%
+          group_by(denominazione_regione
+                   , denominazione_provincia
+                   , data
+                   , totale_casi.x
+                   , prevIndex)
+      }
+      
+      else if((is.null(input$inReg)&(!is.null(input$inProv)))|((!is.null(input$inReg))&(!is.null(input$inProv)))){
+        
+        timeSeriesCOVIDpr <- subset(pcmTOTData
+                                    , (denominazione_provincia%in%c(varTSp)))%>%
+          ungroup() %>%
+          select(denominazione_regione
+                 , denominazione_provincia
+                 , data
+                 , totale_casi.x
+                 , prevIndex)%>%
+          group_by(denominazione_regione
+                   , denominazione_provincia
+                   , data
+                   , totale_casi.x
+                   , prevIndex)
+      }
+      else if(!(is.null(input$inReg))&is.null(input$inProv)){
+        
+        timeSeriesCOVIDpr <- subset(pcmTOTData
+                                    , (denominazione_regione%in%c(reg)))%>%
+          ungroup() %>%
+          select(denominazione_regione
+                 , denominazione_provincia
+                 , data
+                 , totale_casi.x
+                 , prevIndex)%>%
+          group_by(denominazione_regione
+                   , denominazione_provincia
+                   , data
+                   , totale_casi.x
+                   , prevIndex)
+      }
+      
+      
+      # timeSeriesCOVIDpr <- subset(pcmTOTData
+      #                             , (denominazione_provincia%in%c(varTSp)))%>%
+      #   ungroup() %>%
+      #   select(denominazione_regione
+      #          , denominazione_provincia
+      #          , data
+      #          , totale_casi.x
+      #          , prevIndex)%>%
+      #   group_by(denominazione_regione
+      #            , denominazione_provincia
+      #            , data
+      #            , totale_casi.x
+      #            , prevIndex)
+      
+      if(nrow(timeSeriesCOVIDpr)>0){
+        
+        P1 <- ProvinceTS(timeSeriesCOVIDpr, varTSdata)
+        
+        print(P1)
+        
+      }
+      
     })
     
     output$textPLOT1 <- renderText({
@@ -365,52 +519,53 @@ server <- function(input, output, session){
     #----
 
     # Plot the regions1 time series----
-    output$R_TS1 <- renderPlotly({
-
-      varTSr <- input$inReg
-      #   varTSr="Lombardia"
-      varTSdata <- switch(input$inVarR,
-                          "Cumulative cases" = "Cases",
-                          "Cumulative rates" = "PrevIDX")
-      #   varTSdata="Cases"
-      rangeRGDays <- rangeDate[2]
-
-      timeSeriesCOVIDrg1 <- subset(pcmTOTData
-                                  , (denominazione_regione%in%c(varTSr)))%>%
-        ungroup() %>%
-        select(denominazione_regione
-               , denominazione_provincia
-               , data
-               , totale_casi.x
-               , prevIndex)%>%
-        group_by(denominazione_regione
-                 , denominazione_provincia
-                 , data
-                 , totale_casi.x
-                 , prevIndex)%>%
-        filter(data<=rangeRGDays)
-
-      #sum(timeSeriesCOVIDrg$totale_casi.x[timeSeriesCOVIDrg$data==rangeRGDays])
-
-      if(nrow(timeSeriesCOVIDrg1)>0){
-
-        R1 <- RegionTS1(timeSeriesCOVIDrg1, rangeRGDays, varTSdata)
-
-        print(R1)
-
-      }
-
-    })
+    # output$R_TS1 <- renderPlotly({
+    # 
+    #   varTSr <- input$inReg
+    #   #   varTSr="Lombardia"
+    #   varTSdata <- switch(input$inVarR,
+    #                       "Cumulative cases" = "Cases",
+    #                       "Cumulative rates" = "PrevIDX")
+    #   #   varTSdata="Cases"
+    #   rangeRGDays <- rangeDate[2]
+    # 
+    #   timeSeriesCOVIDrg1 <- subset(pcmTOTData
+    #                               , (denominazione_regione%in%c(varTSr)))%>%
+    #     ungroup() %>%
+    #     select(denominazione_regione
+    #            , denominazione_provincia
+    #            , data
+    #            , totale_casi.x
+    #            , prevIndex)%>%
+    #     group_by(denominazione_regione
+    #              , denominazione_provincia
+    #              , data
+    #              , totale_casi.x
+    #              , prevIndex)%>%
+    #     filter(data<=rangeRGDays)
+    # 
+    #   #sum(timeSeriesCOVIDrg$totale_casi.x[timeSeriesCOVIDrg$data==rangeRGDays])
+    # 
+    #   if(nrow(timeSeriesCOVIDrg1)>0){
+    # 
+    #     R1 <- RegionTS1(timeSeriesCOVIDrg1, rangeRGDays, varTSdata)
+    # 
+    #     print(R1)
+    # 
+    #   }
+    # 
+    # })
     
     # Plot the regions2 time series----
     output$R_TS2 <- renderPlotly({
       
       varTSr <- input$inReg
       #   varTSr="Lombardia"
-      varTSdata <- switch(input$inVarR,
-                          "Cumulative cases" = "Cases",
-                          "Cumulative rates" = "PrevIDX")
-      #   varTSdata="Cases"
+      # varTSdata <- switch(input$inVarR,
+      #                     "Cumulative cases" = "Cases",
+      #                     "Cumulative rates" = "PrevIDX")
+      
+      varTSdata="Cases"
       rangeRGDays <- rangeDate[2]
      
       timeSeriesCOVIDrg2 <- subset(pcmTOTData
@@ -450,15 +605,63 @@ server <- function(input, output, session){
       
     })
     
+    output$R_TS2_2 <- renderPlotly({
+      
+      varTSr <- input$inReg
+      #   varTSr="Lombardia"
+      # varTSdata <- switch(input$inVarR,
+      #                     "Cumulative cases" = "Cases",
+      #                     "Cumulative rates" = "PrevIDX")
+      
+      varTSdata="PrevIDX"
+      rangeRGDays <- rangeDate[2]
+      
+      timeSeriesCOVIDrg2 <- subset(pcmTOTData
+                                   , (denominazione_regione%in%c(varTSr)))%>%
+        ungroup() %>%
+        select(denominazione_regione
+               , data
+               , dimessi_guariti.x
+               , deceduti.x
+               , totale_casi.y
+               #---
+               # , "ricoverati_con_sintomi.x"
+               # , "terapia_intensiva.x"
+               # , "isolamento_domiciliare.x"
+               # , "totale_positivi.x"
+               #---
+               , guarPrevIdxReg
+               , decePrevIdxReg
+               , actualPrevIdxReg)%>%
+        dplyr::distinct(denominazione_regione
+                        , data
+                        , dimessi_guariti.x
+                        , deceduti.x
+                        , totale_casi.y
+                        , guarPrevIdxReg
+                        , decePrevIdxReg
+                        , actualPrevIdxReg)%>%
+        filter(data<=rangeRGDays)
+      
+      if(nrow(timeSeriesCOVIDrg2)>0){
+        
+        R2 <- RegionTS2(timeSeriesCOVIDrg2, rangeRGDays, varTSdata)
+        
+        print(R2)
+        
+      }
+      
+    })
+    
     # Plot the regions3 time series----
     output$R_TS3 <- renderPlotly({
       
       varTSr <- input$inReg
       #   varTSr="Lombardia"
-      varTSdata <- switch(input$inVarR,
-                          "Cumulative cases" = "Cases",
-                          "Cumulative rates" = "PrevIDX")
-      #   varTSdata="Cases"
+      # varTSdata <- switch(input$inVarR,
+      #                     "Cumulative cases" = "Cases",
+      #                     "Cumulative rates" = "PrevIDX")
+      varTSdata="Cases"
       rangeRGDays <- rangeDate[2]
       
       timeSeriesCOVIDrg3 <- subset(pcmTOTData
@@ -498,17 +701,64 @@ server <- function(input, output, session){
       
     })
     
-    output$textPLOT2 <- renderText({
-      HTML(paste0("<b>Please, select one region. It is possible to plot <em> cumulative cases </em> or <em> cumulative rates </em>.</b>"
-                  , "<em> Cumulative rates</em>"
-                  , " are the ratio between the cumulative cases and the total population for the selected province multiplied by 100000."))
+    output$R_TS3_2 <- renderPlotly({
+      
+      varTSr <- input$inReg
+      #   varTSr="Lombardia"
+      # varTSdata <- switch(input$inVarR,
+      #                     "Cumulative cases" = "Cases",
+      #                     "Cumulative rates" = "PrevIDX")
+      varTSdata="PrevIDX"
+      rangeRGDays <- rangeDate[2]
+      
+      timeSeriesCOVIDrg3 <- subset(pcmTOTData
+                                   , (denominazione_regione%in%c(varTSr)))%>%
+        ungroup() %>%
+        select(denominazione_regione
+               , data
+               , ricoverati_con_sintomi.x
+               , terapia_intensiva.x
+               , isolamento_domiciliare.x
+               , totale_positivi.x
+               #---
+               , ricSinPrevIdxReg
+               , terIntPrevIdxReg
+               , isolDomPrevIdxReg
+               , totPosPrevIdxReg)%>%
+        dplyr::distinct(denominazione_regione
+                        , data
+                        , ricoverati_con_sintomi.x
+                        , terapia_intensiva.x
+                        , isolamento_domiciliare.x
+                        , totale_positivi.x
+                        #---
+                        , ricSinPrevIdxReg
+                        , terIntPrevIdxReg
+                        , isolDomPrevIdxReg
+                        , totPosPrevIdxReg)%>%
+        filter(data<=rangeRGDays)
+      
+      if(nrow(timeSeriesCOVIDrg3)>0){
+        
+        R3 <- RegionTS3(timeSeriesCOVIDrg3, rangeRGDays, varTSdata)
+        
+        print(R3)
+        
+      }
+      
     })
     
-    output$PLOT2 <- downloadHandler(
-      filename = "Covid_APP_ReadMore_Timeseries_Plot2.pdf",
-      content = function(file) {
-        file.copy(paste0(shinyPath, "data/PDF/Covid_APP_ReadMore_Timeseries_Plot2.pdf"), file)}
-    )
+    # output$textPLOT2 <- renderText({
+    #   HTML(paste0("<b>Please, select one region. It is possible to plot <em> cumulative cases </em> or <em> cumulative rates </em>.</b>"
+    #               , "<em> Cumulative rates</em>"
+    #               , " are the ratio between the cumulative cases and the total population for the selected province multiplied by 100000."))
+    # })
+    # 
+    # output$PLOT2 <- downloadHandler(
+    #   filename = "Covid_APP_ReadMore_Timeseries_Plot2.pdf",
+    #   content = function(file) {
+    #     file.copy(paste0(shinyPath, "data/PDF/Covid_APP_ReadMore_Timeseries_Plot2.pdf"), file)}
+    # )
       
     #----
     
