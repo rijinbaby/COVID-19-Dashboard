@@ -46,18 +46,14 @@ death_rate_home <- function(database, variable){
       plotly::plot_ly()
     
     n_plot <- n_plot %>%
-      plotly::add_trace(
-        x = ~Date, 
-        y=~Death_rates,
-        type='scatter',
-        mode='lines',
-        color=~Province,
-        text=~Province,
-        hovertemplate = paste(
-          "%{text}<br>",
-          "Date: %{x}<br>",
-          "Death Rate.: %{y}")) %>% 
-       plotly::layout(title = "Province Level Death Rate Comparission")
+        plotly::add_trace(x = ~Date, y=~Death_rates,type='scatter', mode='lines', color=~Province,text=~Province,
+                          hovertemplate = paste(
+                                                 "%{text}<br>",
+                                                  "Date: %{x}<br>",
+                                                  "Death Rate: %{y}")) %>% 
+       plotly::layout(title = "Province Level Death Rate Comparission"
+                      , xaxis = list(title = "Days")
+                      , yaxis = list (title = "Death Rate"))
         
     n_plot <- n_plot %>% layout(legend = list(x = 100, y = 0.5))
       
@@ -161,17 +157,13 @@ ProvinceTS <- function(database, variable){
       plotly::plot_ly()
     
     n_plot <- n_plot %>%
-      plotly::add_trace(
-        x = ~Date, 
-        y=~Cumulative_rates,
-        type='scatter',
-        mode='lines',
-        color=~Province,
-        text=~Province,
-        hovertemplate = paste(
-          "%{text}<br>",
-          "Date: %{x}<br>",
-          "Cumulative Rate.: %{y}")) #%>% 
+      plotly::add_trace(x = ~Date, y=~Cumulative_rates, type='scatter', mode='lines',color=~Province,text=~Province,
+                        hovertemplate = paste(
+                          "%{text}<br>",
+                          "Date: %{x}<br>",
+                          "Cumulative Rate.: %{y}")) %>% 
+      plotly::layout(xaxis = list(title = "Days")
+                   , yaxis = list (title = "Death Rates"))
       # plotly::layout(title=paste0("Cumulative rates until the "
       #                                                  , paste0(str_split(untilDate, "-")[[1]][3]
       #                                                           , "/",  str_split(untilDate, "-")[[1]][2])))
@@ -199,17 +191,14 @@ ProvinceTS <- function(database, variable){
       plotly::plot_ly()
     
     n_plot <- n_plot %>%
-      plotly::add_trace(
-        x = ~Date, 
-        y=~Total_Cases,
-        type='scatter',
-        mode='lines',
-        color=~Province,
-        text=~Province,
-        hovertemplate = paste(
-          "%{text}<br>",
-          "Date: %{x}<br>",
-          "Total Cases.: %{y}")) #%>% 
+      plotly::add_trace(x = ~Date, y=~Total_Cases,type='scatter',mode='lines',color=~Province,text=~Province,
+                        hovertemplate = paste(
+                          "%{text}<br>",
+                          "Date: %{x}<br>",
+                          "Total Cases.: %{y}")) %>%
+      plotly::layout(xaxis = list(title = "Days")
+                     , yaxis = list (title = "Total Cases"))
+    
       # plotly::layout(title=paste0("Total Cases rates until the "
       #                             , paste0(str_split(untilDate, "-")[[1]][3]
       #                                      , "/",  str_split(untilDate, "-")[[1]][2])))
@@ -464,7 +453,7 @@ RegionTS3 <- function(database, rangeDays, variable){
                                           hovertemplate = paste("Date: %{x}<br>","Total Positive: %{y}")) 
     
     
-    n_plot <- n_plot %>%plotly::layout(title = paste0("Total Cases of ",regione)
+    n_plot <- n_plot %>%plotly::layout(title = paste0("Daily Rates of ",regione)
                                        , xaxis = list(title = "Days")
                                        , yaxis = list (title = "Rates")
                                        # , paste0(str_split(rangeDays, "-")[[1]][3]
@@ -520,7 +509,7 @@ RegionTS3 <- function(database, rangeDays, variable){
                                           hovertemplate = paste("Date: %{x}<br>","Total Positive: %{y}")) 
     
     
-    n_plot <- n_plot %>%plotly::layout(title = paste0("Total Cases of ",regione)
+    n_plot <- n_plot %>%plotly::layout(title = paste0("Daily Cases of ",regione)
                                        , xaxis = list(title = "Days")
                                        , yaxis = list (title = "Cases")
                                        # , paste0(str_split(rangeDays, "-")[[1]][3]

@@ -5,8 +5,8 @@ body <- dashboardBody(
 
   tags$head(tags$style(HTML('
                           /* body */
-                            
-                          /* header */
+                              
+                              /* header */
                             .main-header .logo {
                              font-family: "Georgia", Times, "Times New Roman", serif;
                               font-weight: bold;font-size: 24px;
@@ -21,9 +21,9 @@ body <- dashboardBody(
                      ))
             ),
   
-  # .content-wrapper, .right-side {
-  #   background-color: white;
-  # }
+# .content-wrapper, .right-side {
+#   background-color: white;
+# }
   
   # .box {margin: 2px;
   #   padding:2px;}
@@ -92,7 +92,8 @@ body <- dashboardBody(
                        , uiOutput(outputId = "textDrates")
                        , style = "color : black;"
                   )
-                  , downloadButton("ProvList1", "Province list")
+                  , downloadButton("ProvList1", "Data Scource")
+                  , downloadButton("PLOT_2", "Read More")
               )
               # )
               
@@ -156,7 +157,7 @@ body <- dashboardBody(
   
   
   tabItem(tabName = "About",
-          tags$h2("About"),
+          tags$h2("COVID-Pro: A province-based analysis for Italy"),
           fluidRow(
             box(width = NULL#, height = 245
                 , status = "info"
@@ -239,6 +240,7 @@ body <- dashboardBody(
                                 , uiOutput(outputId = "textPLOT1")
                                 , style = "color : black;"
                            )
+                           , downloadButton("ProvList1_2", "Data Scource")
                            , downloadButton("PLOT1", "Read more")
                      )
             
@@ -293,15 +295,16 @@ body <- dashboardBody(
             
             ,fluidRow(
               column(width = 12,
-              tabBox( title = "P1",width = 6,height = "425px",
+              tabBox( width = 6,height = "425px", #title = "P1",
                       tabPanel("Cumulative Case",withSpinner(plotlyOutput("R_TS2"))),
                       tabPanel("Cumulative Rate",withSpinner(plotlyOutput("R_TS2_2")))
               )
               
-              ,tabBox( title = "P2",width = 6,height = "425px",
-                      tabPanel("Cumulative Case",withSpinner(plotlyOutput("R_TS3"))),
-                      tabPanel("Cumulative Rate",withSpinner(plotlyOutput("R_TS3_2")))
+              ,tabBox( width = 6,height = "425px",#title = "P2",
+                      tabPanel("Daily Case",withSpinner(plotlyOutput("R_TS3"))),
+                      tabPanel("Daily Rate",withSpinner(plotlyOutput("R_TS3_2")))
               )
+              # ,box(width=1,height = "450px")
               )
               # box(plotlyOutput("R_TS2")
               #     , width = 6, height = 425
@@ -321,8 +324,8 @@ body <- dashboardBody(
           
           # ,fluidRow(
           #   column(width = 12,
-          #          box(title = "ISTAT DATA"))
-          # )  
+          #          box(height=15))
+          # )
           
             ,fluidRow(
               box(withSpinner(plotlyOutput("D_TS"))
@@ -332,49 +335,49 @@ body <- dashboardBody(
                   , collapsible = F, solidHeader = T
               ),
               
-              column(width = 3,
-                     box(width = NULL, height = 152
-                         , status = "info"
-                         #, background = "aqua"
-                         , selectInput(inputId='inProvD'
-                                       , label='Select One Province:'
-                                       , selected="Torino"
-                                       , choices=list(
-                                         "Piemonte"=c("Alessandria", "Asti", "Biella", "Cuneo", "Novara", "Torino", "Verbano-Cusio-Ossola", "Vercelli")
-                                         , "Valle d'Aosta"=c("Aosta", "")
-                                         , "Liguria"=c("Genova", "Imperia", "La Spezia", "Savona")
-                                         , "Lombardia"=c("Bergamo", "Brescia", "Como", "Cremona", "Lecco", "Lodi", "Mantova", "Milano", "Monza e della Brianza", "Pavia", "Sondrio", "Varese")
-                                         , "Trentino Alto Adige"=c("Bolzano", "Trento")
-                                         , "Veneto"=c("Belluno", "Padova", "Rovigo", "Treviso", "Venezia", "Verona", "Vicenza")
-                                         , "Friuli Venezia Giulia"=c("Gorizia", "Pordenone", "Trieste", "Udine")
-                                         , "Emilia Romagna"=c("Bologna", "Ferrara", "Forli-Cesena", "Modena", "Parma", "Piacenza", "Ravenna", "Reggio nell'Emilia", "Rimini")
-                                         , "Toscana"=c("Arezzo", "Firenze", "Grosseto", "Livorno", "Lucca", "Massa Carrara", "Pisa", "Pistoia", "Prato", "Siena")
-                                         , "Umbria"=c("Perugia", "Terni")
-                                         , "Marche"=c("Ancona", "Ascoli Piceno", "Fermo", "Macerata", "Pesaro e Urbino")
-                                         , "Lazio"=c("Frosinone", "Latina", "Rieti", "Roma", "Viterbo")
-                                         , "Abruzzo"=c("Chieti", "L'Aquila", "Pescara", "Teramo" )
-                                         , "Molise"=c("Campobasso", "Isernia")
-                                         , "Campania"=c("Avellino", "Benevento", "Caserta", "Napoli", "Salerno")
-                                         , "Puglia"=c("Bari", "Barletta-Andria-Trani", "Brindisi", "Foggia", "Lecce", "Taranto")
-                                         , "Basilicata"=c("Matera", "Potenza")
-                                         , "Calabria"=c("Catanzaro", "Cosenza", "Crotone", "Reggio di Calabria", "Vibo Valentia")
-                                         , "Sicilia"=c("Agrigento", "Caltanissetta", "Catania", "Enna", "Messina", "Palermo", "Ragusa", "Siracusa", "Trapani")
-                                         , "Sardegna"=c("Cagliari", "Nuoro", "Oristano", "Sassari", "Sud Sardegna")
-                                       )
-                                       , multiple=FALSE
-                                       , selectize=TRUE)
-                     )
+              column(width = 3
+                     # ,box(width = NULL, height = 152
+                     #     # , status = "info"
+                     #     #, background = "aqua"
+                     #     , selectInput(inputId='inProvD'
+                     #                   , label='Select One Province:'
+                     #                   , selected="Torino"
+                     #                   , choices=list(
+                     #                     "Piemonte"=c("Alessandria", "Asti", "Biella", "Cuneo", "Novara", "Torino", "Verbano-Cusio-Ossola", "Vercelli")
+                     #                     , "Valle d'Aosta"=c("Aosta", "")
+                     #                     , "Liguria"=c("Genova", "Imperia", "La Spezia", "Savona")
+                     #                     , "Lombardia"=c("Bergamo", "Brescia", "Como", "Cremona", "Lecco", "Lodi", "Mantova", "Milano", "Monza e della Brianza", "Pavia", "Sondrio", "Varese")
+                     #                     , "Trentino Alto Adige"=c("Bolzano", "Trento")
+                     #                     , "Veneto"=c("Belluno", "Padova", "Rovigo", "Treviso", "Venezia", "Verona", "Vicenza")
+                     #                     , "Friuli Venezia Giulia"=c("Gorizia", "Pordenone", "Trieste", "Udine")
+                     #                     , "Emilia Romagna"=c("Bologna", "Ferrara", "Forli-Cesena", "Modena", "Parma", "Piacenza", "Ravenna", "Reggio nell'Emilia", "Rimini")
+                     #                     , "Toscana"=c("Arezzo", "Firenze", "Grosseto", "Livorno", "Lucca", "Massa Carrara", "Pisa", "Pistoia", "Prato", "Siena")
+                     #                     , "Umbria"=c("Perugia", "Terni")
+                     #                     , "Marche"=c("Ancona", "Ascoli Piceno", "Fermo", "Macerata", "Pesaro e Urbino")
+                     #                     , "Lazio"=c("Frosinone", "Latina", "Rieti", "Roma", "Viterbo")
+                     #                     , "Abruzzo"=c("Chieti", "L'Aquila", "Pescara", "Teramo" )
+                     #                     , "Molise"=c("Campobasso", "Isernia")
+                     #                     , "Campania"=c("Avellino", "Benevento", "Caserta", "Napoli", "Salerno")
+                     #                     , "Puglia"=c("Bari", "Barletta-Andria-Trani", "Brindisi", "Foggia", "Lecce", "Taranto")
+                     #                     , "Basilicata"=c("Matera", "Potenza")
+                     #                     , "Calabria"=c("Catanzaro", "Cosenza", "Crotone", "Reggio di Calabria", "Vibo Valentia")
+                     #                     , "Sicilia"=c("Agrigento", "Caltanissetta", "Catania", "Enna", "Messina", "Palermo", "Ragusa", "Siracusa", "Trapani")
+                     #                     , "Sardegna"=c("Cagliari", "Nuoro", "Oristano", "Sassari", "Sud Sardegna")
+                     #                   )
+                     #                   , multiple=FALSE
+                     #                   , selectize=TRUE)
+                     # )
                      
-                     , box(width = NULL, height = 252
-                           , status = "info"
+                     , box(width = NULL, height = 430
+                           # , status = "info"
                            #, background = "aqua"
                            , h5(class = "text-muted"
                                 , br()
                                 , uiOutput(outputId = "textPLOT3")
                                 , style = "color : black;"
                            )
-                           , downloadButton("PLOT3", "Read more")
-                           , downloadButton("ProvList", "Province list")
+                           , downloadButton("PLOT3", "ISTAT Info")
+                           , downloadButton("ProvList", "COVID-19 Source")
                      )
                      
               )
@@ -384,13 +387,13 @@ body <- dashboardBody(
     ),
     
     # "Models"----
-    tabItem(tabName = "SIRDModels",
-            tags$h2("SIRD Models")
+    tabItem(tabName = "SIRDModels"
+            # ,tags$h2("SIRD Models")
             
             ,fluidRow(
-              box(plotlyOutput("SIRDp")
+              box(withSpinner(plotlyOutput("SIRDp"))
                   , width = 9, height = 425
-                  , status = "info"
+                  # , status = "info"
                   #, background = "aqua"
                   , collapsible = F, solidHeader = T
               )
@@ -399,32 +402,32 @@ body <- dashboardBody(
               
               , column(width = 3,
                        box(width = NULL, height = 425
-                           , status = "info"
+                           # , status = "info"
                            #, background = "aqua"
                            
-                           , selectInput(inputId="SIRprovCV"
-                                         , label='Province:'
-                                         , selected="Torino"
-                                         , choices=list(
-                                           "Piemonte"=c("Alessandria", "Asti", "Biella", "Cuneo", "Novara", "Torino", "Verbano-Cusio-Ossola", "Vercelli")
-                                           , "Valle d'Aosta"=c("Aosta", "")
-                                           , "Liguria"=c("Imperia", "")
-                                           , "Lombardia"=c("Cremona", "")
-                                           , "Trentino Alto Adige"=c("Bolzano", "Trento")
-                                           , "Emilia Romagna"=c("Bologna", "Ferrara", "Forli-Cesena", "Modena", "Parma", "Piacenza", "Ravenna", "Reggio nell'Emilia", "Rimini")
-                                           , "Toscana"=c("Arezzo", "Firenze", "Grosseto", "Livorno", "Lucca", "Massa Carrara", "Pisa", "Pistoia", "Prato", "Siena")
-                                           , "Umbria"=c("Perugia", "Terni")
-                                           , "Marche"=c("Ancona", "Ascoli Piceno", "Fermo", "Macerata", "Pesaro e Urbino")
-                                           , "Lazio"=c("Frosinone", "Latina", "Rieti", "Roma", "Viterbo")
-                                           , "Abruzzo"=c("Chieti", "L'Aquila", "Pescara", "Teramo" )
-                                           , "Molise"=c("Campobasso", "Isernia")
-                                           , "Puglia"=c("Bari", "Barletta-Andria-Trani", "Brindisi", "Foggia", "Lecce", "Taranto")
-                                           , "Basilicata"=c("Matera", "Potenza")
-                                           , "Calabria"=c("Catanzaro", "Cosenza", "Crotone", "Reggio di Calabria", "Vibo Valentia")
-                                           , "Sicilia"=c("Agrigento", "Caltanissetta", "Catania", "Enna", "Messina", "Palermo", "Ragusa", "Siracusa", "Trapani")
-                                           , "Sardegna"=c("Cagliari", "Nuoro", "Oristano", "Sassari", "Sud Sardegna")
-                                         )
-                           )
+                           # , selectInput(inputId="SIRprovCV"
+                           #               , label='Province:'
+                           #               , selected="Torino"
+                           #               , choices=list(
+                           #                 "Piemonte"=c("Alessandria", "Asti", "Biella", "Cuneo", "Novara", "Torino", "Verbano-Cusio-Ossola", "Vercelli")
+                           #                 , "Valle d'Aosta"=c("Aosta", "")
+                           #                 , "Liguria"=c("Imperia", "")
+                           #                 , "Lombardia"=c("Cremona", "")
+                           #                 , "Trentino Alto Adige"=c("Bolzano", "Trento")
+                           #                 , "Emilia Romagna"=c("Bologna", "Ferrara", "Forli-Cesena", "Modena", "Parma", "Piacenza", "Ravenna", "Reggio nell'Emilia", "Rimini")
+                           #                 , "Toscana"=c("Arezzo", "Firenze", "Grosseto", "Livorno", "Lucca", "Massa Carrara", "Pisa", "Pistoia", "Prato", "Siena")
+                           #                 , "Umbria"=c("Perugia", "Terni")
+                           #                 , "Marche"=c("Ancona", "Ascoli Piceno", "Fermo", "Macerata", "Pesaro e Urbino")
+                           #                 , "Lazio"=c("Frosinone", "Latina", "Rieti", "Roma", "Viterbo")
+                           #                 , "Abruzzo"=c("Chieti", "L'Aquila", "Pescara", "Teramo" )
+                           #                 , "Molise"=c("Campobasso", "Isernia")
+                           #                 , "Puglia"=c("Bari", "Barletta-Andria-Trani", "Brindisi", "Foggia", "Lecce", "Taranto")
+                           #                 , "Basilicata"=c("Matera", "Potenza")
+                           #                 , "Calabria"=c("Catanzaro", "Cosenza", "Crotone", "Reggio di Calabria", "Vibo Valentia")
+                           #                 , "Sicilia"=c("Agrigento", "Caltanissetta", "Catania", "Enna", "Messina", "Palermo", "Ragusa", "Siracusa", "Trapani")
+                           #                 , "Sardegna"=c("Cagliari", "Nuoro", "Oristano", "Sassari", "Sud Sardegna")
+                           #               )
+                           # )
                            
                            , sliderInput(inputId="LagDaysCV"
                                          , label="Lag Days:"
@@ -452,15 +455,15 @@ body <- dashboardBody(
             )
             #---
             ,fluidRow(
-              box(plotlyOutput("SIRDts")
+              box(withSpinner(plotlyOutput("SIRDts"))
                   , width = 9, height = 425
-                  , status = "info"
+                  # , status = "info"
                   #, background = "aqua"
                   , collapsible = F, solidHeader = T
               )
               , column(width = 3,
                        box(width = NULL, height = 425
-                           , status = "info"
+                           # , status = "info"
                            #, background = "aqua"
                            
                            , h5(class = "text-muted"
@@ -475,33 +478,40 @@ body <- dashboardBody(
                        )
               )
             )
-            #---
-            ,fluidRow(
-              box(leafletOutput("SIRDMap")
-                  , width = 9, height = 425
-                  , status = "info"
-                  #, background = "aqua"
-                  , collapsible = F, solidHeader = T
-              ),
+            #---  tabPanel("Cumulative Case",withSpinner(leafletOutput("provinceMap",height = "690px"))),
+            ,fluidRow( 
+              tabBox( width = 9,height = "430px"
+                             ,tabPanel("Transmission Rate",withSpinner(leafletOutput("SIRDMap",height = "425px")))
+                             ,tabPanel("Recovery Rate",withSpinner(leafletOutput("SIRDMap2",height = "425px")))
+                             ,tabPanel("Mortality Rate",withSpinner(leafletOutput("SIRDMap3",height = "425px")))
+                             ,tabPanel("Basic Reproduction Number",withSpinner(leafletOutput("SIRDMap4",height = "425px")))
+                     ),
+              
+              # box(leafletOutput("SIRDMap")
+              #     , width = 9, height = 425
+              #     # , status = "info"
+              #     #, background = "aqua"
+              #     , collapsible = F, solidHeader = T
+              # ),
               
               column(width = 3,
                      box(width = NULL, height = 425
-                         , status = "info"
+                         # , status = "info"
                          #, background = "aqua"
-                         , selectInput(inputId="varMapSIRD"
-                                       , label="Choose a variable to display:"
-                                       , choices=c("Basic reproduction number"
-                                                   ,"Transmission rate"
-                                                   ,"Recovery rate"
-                                                   ,"Mortality rate")
-                                       , selected="Basic reproduction number")
+                         # , selectInput(inputId="varMapSIRD"
+                         #               , label="Choose a variable to display:"
+                         #               , choices=c("Basic reproduction number"
+                         #                           ,"Transmission rate"
+                         #                           ,"Recovery rate"
+                         #                           ,"Mortality rate")
+                         #               , selected="Basic reproduction number")
                          
-                         , sliderInput(inputId="selectDateSIRD"
-                                       , label="Date:"
-                                       , min = rangeDate[1]
-                                       , max = max(SIRDParam_Dataset$date, na.rm = T)
-                                       , value = max(SIRDParam_Dataset$date, na.rm = T)  #as.Date("2020-05-02") #
-                                       , timeFormat="%Y-%m-%d")
+                         # , sliderInput(inputId="selectDateSIRD"
+                         #               , label="Date:"
+                         #               , min = rangeDate[1]
+                         #               , max = max(SIRDParam_Dataset$date, na.rm = T)
+                         #               , value = max(SIRDParam_Dataset$date, na.rm = T)  #as.Date("2020-05-02") #
+                         #               , timeFormat="%Y-%m-%d")
                          , h5(class = "text-muted"
                               , br()
                               , uiOutput(outputId = "textSIRD3")

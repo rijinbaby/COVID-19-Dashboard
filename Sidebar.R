@@ -5,7 +5,6 @@ sidebar <- dashboardSidebar(
 
               menuItem("Province Map", tabName = "ProvinceMap", icon = icon("map")#, startExpanded = TRUE
                        
-                       # , menuSubItem("Details",tabName = "details" )
                 )
 
 # Time Series --------------------------------------------------------------
@@ -75,7 +74,11 @@ sidebar <- dashboardSidebar(
               , selectize=TRUE
               ,width = "260px"
             )
-      ) # sidebarmenu
+# ,dashboardFooter(left_text ="**If the Provice filter is selected then the Region filter is irresponsive. To work with Region filter clear the Province values selecter"
+#                  , width = "100%", height = "160px", italic = TRUE, bold = TRUE,
+#                  style = "text-align:center; align: center; padding: 0px; margin: 0px;")
+      
+    ) # sidebarmenu
           
 )  # dashboardSidebar
 

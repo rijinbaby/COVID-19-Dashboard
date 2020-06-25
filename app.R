@@ -35,7 +35,6 @@ pacman::p_load(shiny, shinydashboard, shinydashboardPlus, leaflet, tidyverse, pl
 #Usefull Variables
 shinyPath <- "C:/Users/Rijin/Documents/Covid-19-Dashboard/"
 
-#-----------------
 # Source helper functions -----
 
 setwd(shinyPath)  #   /srv/shiny-server/shidash_COVID_Italy
@@ -58,9 +57,10 @@ SIRDParam_Dataset <<- SIRDParameterDataset()
 source("mapCOVIDita.R")
 source("prevIDXup2lowBuond.R")
 source("timeSeriesCOVIDita.R")
-#-----------------
+
+#
 rangeDate <<- range(unique(pcmTOTData$data)[2:length(unique(pcmTOTData$data))])
-#-----------------
+#
 
 ## Header content
 source("Header.R")
@@ -74,7 +74,7 @@ source("Body.R")
 ui <- dashboardPage(header, sidebar, body ) #,skin = "red"
 
 
-#-----------------
+# SERVER -----------------
 
 server <- function(input, output, session){
   
@@ -111,49 +111,49 @@ server <- function(input, output, session){
     output$total_box <- renderValueBox({
       if(info_box_data$confirmed_diff>=0){
       valueBox(
-        paste0(info_box_data$confirmed," (+",info_box_data$confirmed_diff,")"), paste("CONFIRMED    ","Last Update:",rangeDate[2]), icon = icon("user", lib = "glyphicon"),color = "red"
+        paste0(info_box_data$confirmed," (+",info_box_data$confirmed_diff,")"), "CONFIRMED", icon = icon("user", lib = "glyphicon"),color = "red"
         )}
         else{
           valueBox(
-            paste0(info_box_data$confirmed," (",info_box_data$confirmed_diff,")"), paste("CONFIRMED    ","Last Update:",rangeDate[2]), icon = icon("user", lib = "glyphicon"),
-            color = "red"
+            paste0(info_box_data$confirmed," (",info_box_data$confirmed_diff,")"), "CONFIRMED", icon = icon("user", lib = "glyphicon"),color = "red"
         )}
       })
-
+#  paste("CONFIRMED    ","Last Update:",rangeDate[2])
     output$active_box <- renderValueBox({
       if(info_box_data$active_diff>=0){
       valueBox(
-        paste0(info_box_data$active," (+",info_box_data$active_diff,")"), "ACTIVE",color = "blue"
+        paste0(info_box_data$active," (+",info_box_data$active_diff,")"), "ACTIVE",color = "blue", icon = icon("hospital-alt", lib = "font-awesome")
           #icon = "fas fa-ambulance"
         )}
         else{
           valueBox(
-            paste0(info_box_data$active," (",info_box_data$active_diff,")"), "ACTIVE",
-            color = "blue"
+            paste0(info_box_data$active," (",info_box_data$active_diff,")"), "ACTIVE",color = "blue", icon = icon("hospital-alt", lib = "font-awesome")
         )}
     })
     output$Recovered_box <- renderValueBox({
       if(info_box_data$recovered_diff>=0){
       valueBox(
-        paste0(info_box_data$recovered," (+",info_box_data$recovered_diff,")" ), "RECOVERED", color = "green"
+        paste0(info_box_data$recovered," (+",info_box_data$recovered_diff,")" ), "RECOVERED", color = "green", icon = icon("smile", lib = "font-awesome")
         #icon = "fas fa-heart-broken"
 
       )}
       else{
         valueBox(
-          paste0(info_box_data$recovered," (",info_box_data$recovered_diff,")" ), "RECOVERED", color = "green"
+          paste0(info_box_data$recovered," (",info_box_data$recovered_diff,")" ), "RECOVERED", color = "green", icon = icon("smile", lib = "font-awesome")
           #icon = "fas fa-heart-broken"
       )}
     })
     output$deceased_box <- renderValueBox({
       if(info_box_data$death_diff>=0){
       valueBox(
-        paste0(info_box_data$death," (+",info_box_data$death_diff,")" ), "DECEASED", color = "orange"
+        paste0(info_box_data$death," (+",info_box_data$death_diff,")" ), paste("DECEASED    ","Last Update:",rangeDate[2]), color = "orange"
+        , icon = icon("procedures", lib = "font-awesome")
         #icon = "fas fa-heart-broken"
       )}
       else{
         valueBox(
-          paste0(info_box_data$death," (",info_box_data$death_diff,")" ), "DECEASED", color = "orange"
+          paste0(info_box_data$death," (",info_box_data$death_diff,")" ), paste("DECEASED    ","Last Update:",rangeDate[2]), color = "orange"
+          , icon = icon("procedures", lib = "font-awesome")
           #icon = "fas fa-heart-broken"
         )}
       })
@@ -192,19 +192,21 @@ server <- function(input, output, session){
     })
     
     output$textPres <- renderText({
-      HTML(paste0("<b>COVID-Pro: a province-based analysis for Italy<b>
+      HTML(paste0("<b>COVID-Pro: A province-based analysis for Italy<b>
                   <br />
                   <br />
                   The COVID-19 outbreak in Italy has spread mainly in northern regions, particularly in Lombardy. 
                   However, even within the same region the virus has spread irregularly from province to province, producing real epicenters of infection in some provinces but also affecting other areas with relatively lower intensity.
-
+                  <br />
+                  <br />
                   In this dashboard we present some tools for analyzing and visualizing the COVID-19 outbreak in 
                   Italy at a provincial (NUTS-3) level by integrating official data from the Italian Ministry of 
                   Health with data extracted from official press conferences of regional health authorities, 
                   especially regarding the number of deaths due to the Covid-19 which is not currently reported in 
                   official data releases. An adjusted time-dependent SIRD model is used to predict the epidemics behavior 
                   in the near future.
-                  
+                  <br />
+                  <br />
                   Dashboard developed by: L.Ferrari, G.Gerardi, G.Manzi, A.Micheletti, F.Nicolussi, S.Salini
                   We thank students R. Baby, A. Iordache, A. Singh and N. Velardo for their contribution"))
     })
@@ -242,19 +244,28 @@ server <- function(input, output, session){
     
     output$textDrates <- renderText({
       HTML(paste0("<b><em>Cumulative Rate</em></b>
-                  <b>are the ratio between the cumulative cases and the total population for the selected province multiplied by 100000.</b>
+                  are the ratio between the cumulative cases and the total population for the selected province multiplied by 100000.
                   <br />
                   The results are computed using the Italian Civil Protection dataset.
                   <br />
-                   <br />
+                  <br />
                   <b><em>Death Rate</em></b>
-                   <b> are the ratio between the cumulative death cases and the total population for the selected provinces multiplied by 100000.</b>
-                   To build this time series we used data collected by scraping the daily press conferences and Covid-19 bulletins provided by regions.
+                   are the ratio between the cumulative death cases and the total population for the selected provinces multiplied by 100000.
                    <br />
-                   <b> Indeed, the official data repository of the Italian Ministry of Health and the Civil Protection Agency does not provide Covid-19 data on the daily number of deaths at a provincial level, but only on a regional level.</b>"))
+                   <br />
+                   The official data repository of the Italian Ministry of Health and the Civil Protection Agency
+                   provide Covid-19 death data only at Region level. Province level death data is not published.
+                   <br />
+                   We use web scraping technique to collect daily province level death data from the news articles and bulletins that are published with respect to individual regions.
+                   "))
     })
 
     output$ProvList1 <- downloadHandler(
+      filename = "Covid_APP_ReadMore_Provinces.pdf",
+      content = function(file) {
+        file.copy(paste0(shinyPath, "data/PDF/Covid_APP_ReadMore_Provinces.pdf"), file)}
+    )
+    output$ProvList1_2 <- downloadHandler(
       filename = "Covid_APP_ReadMore_Provinces.pdf",
       content = function(file) {
         file.copy(paste0(shinyPath, "data/PDF/Covid_APP_ReadMore_Provinces.pdf"), file)}
@@ -504,13 +515,35 @@ server <- function(input, output, session){
       
     })
     
+    # "<b>Please, select more than one province. It is possible to plot <em> cumulative cases </em> or <em> cumulative rates </em>.</b>"
+    # , "<em> Cumulative rates</em>"
+    # , " are the ratio between the cumulative cases and the total population for the selected province multiplied by 100000."
+    
     output$textPLOT1 <- renderText({
-      HTML(paste0("<b>Please, select more than one province. It is possible to plot <em> cumulative cases </em> or <em> cumulative rates </em>.</b>"
-                  , "<em> Cumulative rates</em>"
-                  , " are the ratio between the cumulative cases and the total population for the selected province multiplied by 100000."))
+      HTML(paste0("<b><em>Cumulative Rate</em></b>
+                  are the ratio between the cumulative cases and the total population for the selected province multiplied by 100000.
+                  <br />
+                  The results are computed using the Italian Civil Protection dataset.
+                  <br />
+                  <br />
+                  <b><em>Death Rate</em></b>
+                   are the ratio between the cumulative death cases and the total population for the selected provinces multiplied by 100000.
+                   <br />
+                   <br />
+                   The official data repository of the Italian Ministry of Health and the Civil Protection Agency
+                   provide Covid-19 death data only at Region level. Province level death data is not published.
+                   <br />
+                   We use web scraping technique to collect daily province level death data from the news articles and bulletins that are published with respect to individual regions.
+                   "))
     })
     
     output$PLOT1 <- downloadHandler(
+      filename = "Covid_APP_ReadMore_Timeseries_Plot1.pdf",
+      content = function(file) {
+        file.copy(paste0(shinyPath, "data/PDF/Covid_APP_ReadMore_Timeseries_Plot1.pdf"), file)}
+    )
+    
+    output$PLOT_2 <- downloadHandler(
       filename = "Covid_APP_ReadMore_Timeseries_Plot1.pdf",
       content = function(file) {
         file.copy(paste0(shinyPath, "data/PDF/Covid_APP_ReadMore_Timeseries_Plot1.pdf"), file)}
@@ -764,10 +797,16 @@ server <- function(input, output, session){
     
     #Deaths Time Series----
     output$D_TS <- renderPlotly({
-
-      varTSd <- input$inProvD
+      
+      if(is.null(input$inProv)){
+        varTSd="Torino"
+      }
+      else{
+        varTSd <- input$inProv
+      }
+      
       # varTSd="Piacenza"
-      deathDF <- deathDatesReg[which(deathDatesReg$province==varTSd),]
+      deathDF <- deathDatesReg[which(deathDatesReg$province==varTSd[1]),]
 
       if(nrow(deathDF)>0){
         
@@ -806,7 +845,16 @@ server <- function(input, output, session){
     })
     
     output$textPLOT3 <- renderText({
-      HTML(paste0("<b>ISTAT data about weekly deaths are plotted</b> (according to the ISTAT dataset only some municipalities are present in the count)<b>. For some provinces</b> (see the list below)<b> also the deaths for Covid19 are plotted.</b>"))
+      HTML(paste0("Please select one province in the Province filter. If multiple provinces are selected the graph will display data for the first Province selected.
+                  <br />
+                  <br />
+                  This Plot compares the trend in weekly death across years with the COVID-19 death
+                  <br />
+                  <br />
+                  The weekly data are from <b>Italian National Institute of Statistics (ISTAT)</b> 
+                  <br />
+                  According to the ISTAT dataset not all municipalities in each Provinces are taken into account 
+                  (see the list below)"))
     })
     
     output$PLOT3 <- downloadHandler(
@@ -829,7 +877,15 @@ server <- function(input, output, session){
     # Province SIRD----
     output$SIRDp <- renderPlotly({
 
-      varSIRpCV <- input$SIRprovCV
+      # varSIRpCV <- input$SIRprovCV
+      
+      if(is.null(input$inProv)){
+        varSIRpCV="Torino"
+      }
+      else{
+        varSIRpCV <- input$inProv[1]
+      }
+      
       # varSIRpCV = "Torino"
       varLagpCV <- input$LagDaysCV
       # varLagpCV = 7
@@ -862,8 +918,16 @@ server <- function(input, output, session){
     # SIRD time series----
     output$SIRDts <- renderPlotly({
 
-      varSIRpCV <- input$SIRprovCV
+      # varSIRpCV <- input$SIRprovCV
       # varSIRpCV = "Torino"
+      
+      if(is.null(input$inProv)){
+        varSIRpCV="Torino"
+      }
+      else{
+        varSIRpCV <- input$inProv[1]
+      }
+      
       varLagpCV <- input$LagDaysCV
       # varLagpCV = 7
 
@@ -915,19 +979,66 @@ server <- function(input, output, session){
                   Only the provinces for which the data are available are shown.</b>"))
     })
 
-    output$SIRDMap <- renderLeaflet({
 
-      selectDateSIRD <- input$selectDateSIRD
-      #   selectDateSIRD="2020-05-04"
-      ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
+    # SIRD map
+    {
+      output$SIRDMap <- renderLeaflet({
+        
+        selectDateSIRD <- input$selectDate1
+        #   selectDateSIRD="2020-05-04"
+        ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
+        
+        # varMapSIRD <- input$varMapSIRD
+        varMapSIRD="Transmission rate"
+        
+        SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
+        SIRDprovMap
+        
+      })
+      
+      output$SIRDMap2 <- renderLeaflet({
+        
+        selectDateSIRD <- input$selectDate1
+        #   selectDateSIRD="2020-05-04"
+        ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
+        
+        # varMapSIRD <- input$varMapSIRD
+        varMapSIRD="Recovery rate"
+        
+        SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
+        SIRDprovMap
+        
+      })
+      output$SIRDMap3 <- renderLeaflet({
+        
+        selectDateSIRD <- input$selectDate1
+        #   selectDateSIRD="2020-05-04"
+        ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
+        
+        # varMapSIRD <- input$varMapSIRD
+        varMapSIRD="Mortality rate"
+        
+        SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
+        SIRDprovMap
+        
+      })
+      output$SIRDMap4 <- renderLeaflet({
+        
+        selectDateSIRD <- input$selectDate1
+        #   selectDateSIRD="2020-05-04"
+        ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
+        
+        # varMapSIRD <- input$varMapSIRD
+        varMapSIRD="Basic reproduction number"
+        
+        SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
+        SIRDprovMap
+        
+      })
+    }
 
-      varMapSIRD <- input$varMapSIRD
-      #   varMapSIRD="Basic Reproduction Number"
-
-      SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
-      SIRDprovMap
-
-    })
+    
+    
 
   }
 
