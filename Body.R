@@ -85,7 +85,8 @@ body <- dashboardBody(
               # ,column(width = 6,
                 ,box(width = 6
                    , height = "300px"
-                   # , status = "info"
+                   , status = "info"
+                   # , background = "light-blue"
                    , h5(class = "text-muted"
                        , br()
                        #, uiOutput(outputId = "textPres")
@@ -233,7 +234,7 @@ body <- dashboardBody(
                      # )
                      
                      , box(width = 3, height = "460px"
-                           # , status = "info"
+                           , status = "info"
                            #, background = "aqua"
                            , h5(class = "text-muted"
                                 , br()
@@ -295,12 +296,12 @@ body <- dashboardBody(
             
             ,fluidRow(
               column(width = 12,
-              tabBox( width = 6,height = "425px", #title = "P1",
+              tabBox( width = 6,height = "460px", #title = "P1",
                       tabPanel("Cumulative Case",withSpinner(plotlyOutput("R_TS2"))),
                       tabPanel("Cumulative Rate",withSpinner(plotlyOutput("R_TS2_2")))
               )
               
-              ,tabBox( width = 6,height = "425px",#title = "P2",
+              ,tabBox( width = 6,height = "460px",#title = "P2",
                       tabPanel("Daily Case",withSpinner(plotlyOutput("R_TS3"))),
                       tabPanel("Daily Rate",withSpinner(plotlyOutput("R_TS3_2")))
               )
@@ -328,14 +329,25 @@ body <- dashboardBody(
           # )
           
             ,fluidRow(
-              box(withSpinner(plotlyOutput("D_TS"))
-                  , width = 9, height = 425
+              column(width = 12
+                     
+                     , box(width = 3, height = 425
+                           , status = "info"
+                           , h5(class = "text-muted"
+                                , br()
+                                , uiOutput(outputId = "textPLOT3")
+                                , style = "color : black;"
+                           )
+                           , downloadButton("PLOT3", "ISTAT Information")
+                           , downloadButton("ProvList", "COVID-19 Source")
+                     )
+                     
+              ,box(withSpinner(plotlyOutput("D_TS"))
+                  , width = 9, height = 425, collapsible = F, solidHeader = T
                   # , status = "info"
-                  #, background = "aqua"
-                  , collapsible = F, solidHeader = T
               ),
               
-              column(width = 3
+              # column(width = 3
                      # ,box(width = NULL, height = 152
                      #     # , status = "info"
                      #     #, background = "aqua"
@@ -368,18 +380,6 @@ body <- dashboardBody(
                      #                   , selectize=TRUE)
                      # )
                      
-                     , box(width = NULL, height = 430
-                           # , status = "info"
-                           #, background = "aqua"
-                           , h5(class = "text-muted"
-                                , br()
-                                , uiOutput(outputId = "textPLOT3")
-                                , style = "color : black;"
-                           )
-                           , downloadButton("PLOT3", "ISTAT Info")
-                           , downloadButton("ProvList", "COVID-19 Source")
-                     )
-                     
               )
               
             )
@@ -402,7 +402,7 @@ body <- dashboardBody(
               
               , column(width = 3,
                        box(width = NULL, height = 425
-                           # , status = "info"
+                           , status = "info"
                            #, background = "aqua"
                            
                            # , selectInput(inputId="SIRprovCV"
@@ -463,7 +463,7 @@ body <- dashboardBody(
               )
               , column(width = 3,
                        box(width = NULL, height = 425
-                           # , status = "info"
+                           , status = "info"
                            #, background = "aqua"
                            
                            , h5(class = "text-muted"
@@ -480,12 +480,12 @@ body <- dashboardBody(
             )
             #---  tabPanel("Cumulative Case",withSpinner(leafletOutput("provinceMap",height = "690px"))),
             ,fluidRow( 
-              tabBox( width = 9,height = "430px"
-                             ,tabPanel("Transmission Rate",withSpinner(leafletOutput("SIRDMap",height = "425px")))
-                             ,tabPanel("Recovery Rate",withSpinner(leafletOutput("SIRDMap2",height = "425px")))
-                             ,tabPanel("Mortality Rate",withSpinner(leafletOutput("SIRDMap3",height = "425px")))
-                             ,tabPanel("Basic Reproduction Number",withSpinner(leafletOutput("SIRDMap4",height = "425px")))
-                     ),
+              tabBox( width = 9,height = "470px"
+                             ,tabPanel("Transmission Rate",withSpinner(leafletOutput("SIRDMap",height = "460px")))
+                             ,tabPanel("Recovery Rate",withSpinner(leafletOutput("SIRDMap2",height = "460px")))
+                             ,tabPanel("Mortality Rate",withSpinner(leafletOutput("SIRDMap3",height = "460px")))
+                             ,tabPanel("Basic Reproduction Number",withSpinner(leafletOutput("SIRDMap4",height = "460px")))
+                     )
               
               # box(leafletOutput("SIRDMap")
               #     , width = 9, height = 425
@@ -494,9 +494,12 @@ body <- dashboardBody(
               #     , collapsible = F, solidHeader = T
               # ),
               
-              column(width = 3,
-                     box(width = NULL, height = 425
-                         # , status = "info"
+              ,column(width =3,
+                      box(width = NULL,height = 125,title = "Selected Date:", status = "info",
+                      verbatimTextOutput("s_d")))
+              ,column(width = 3,
+                     box(width = NULL, height = 360
+                         , status = "info"
                          #, background = "aqua"
                          # , selectInput(inputId="varMapSIRD"
                          #               , label="Choose a variable to display:"

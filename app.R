@@ -45,6 +45,9 @@ downDatiSQL()
 downAndSaveDataISTAT()
 cumulDeathsProv()
 italy_data()
+dropdownMenuCustom()
+customSentence_share()
+# customSentence()
 
 source("SIRModelParamCV_optimGG.R")
 source("SIRModelParam_15gg.R")
@@ -71,7 +74,7 @@ source("Body.R")
 
 # source("UI_mod.R")
 
-ui <- dashboardPage(header, sidebar, body ) #,skin = "red"
+ui <- dashboardPage(header, sidebar, body ) #,skin = "red"  ,skin = "black"
 
 
 # SERVER -----------------
@@ -192,10 +195,7 @@ server <- function(input, output, session){
     })
     
     output$textPres <- renderText({
-      HTML(paste0("<b>COVID-Pro: A province-based analysis for Italy<b>
-                  <br />
-                  <br />
-                  The COVID-19 outbreak in Italy has spread mainly in northern regions, particularly in Lombardy. 
+      HTML(paste0("The COVID-19 outbreak in Italy has spread mainly in northern regions, particularly in Lombardy. 
                   However, even within the same region the virus has spread irregularly from province to province, producing real epicenters of infection in some provinces but also affecting other areas with relatively lower intensity.
                   <br />
                   <br />
@@ -208,6 +208,8 @@ server <- function(input, output, session){
                   <br />
                   <br />
                   Dashboard developed by: L.Ferrari, G.Gerardi, G.Manzi, A.Micheletti, F.Nicolussi, S.Salini
+                  <br />
+                  <br />
                   We thank students R. Baby, A. Iordache, A. Singh and N. Velardo for their contribution"))
     })
     
@@ -255,6 +257,7 @@ server <- function(input, output, session){
                    <br />
                    The official data repository of the Italian Ministry of Health and the Civil Protection Agency
                    provide Covid-19 death data only at Region level. Province level death data is not published.
+                   <br />
                    <br />
                    We use web scraping technique to collect daily province level death data from the news articles and bulletins that are published with respect to individual regions.
                    "))
@@ -533,6 +536,7 @@ server <- function(input, output, session){
                    The official data repository of the Italian Ministry of Health and the Civil Protection Agency
                    provide Covid-19 death data only at Region level. Province level death data is not published.
                    <br />
+                   <br />
                    We use web scraping technique to collect daily province level death data from the news articles and bulletins that are published with respect to individual regions.
                    "))
     })
@@ -793,7 +797,7 @@ server <- function(input, output, session){
     #     file.copy(paste0(shinyPath, "data/PDF/Covid_APP_ReadMore_Timeseries_Plot2.pdf"), file)}
     # )
       
-    #----
+    
     
     #Deaths Time Series----
     output$D_TS <- renderPlotly({
@@ -834,7 +838,7 @@ server <- function(input, output, session){
             , xaxis = list( type = 'date'
 							, tickformat = "%d/%m"
 							, title = "Date")
-            , yaxis = list(title = "Death_Count")
+            , yaxis = list(title = "Death Count")
 			, legend=list(title=list(text='Year')) #'<b> Year </b>'
           )
 
@@ -845,7 +849,8 @@ server <- function(input, output, session){
     })
     
     output$textPLOT3 <- renderText({
-      HTML(paste0("Please select one province in the Province filter. If multiple provinces are selected the graph will display data for the first Province selected.
+      HTML(paste0("<b>Note: Please select one province in the Province filter. If multiple provinces are selected the graph will display data for the first Province selected.</b>
+                  <br />
                   <br />
                   <br />
                   This Plot compares the trend in weekly death across years with the COVID-19 death
@@ -853,8 +858,12 @@ server <- function(input, output, session){
                   <br />
                   The weekly data are from <b>Italian National Institute of Statistics (ISTAT)</b> 
                   <br />
-                  According to the ISTAT dataset not all municipalities in each Provinces are taken into account 
-                  (see the list below)"))
+                  <br />
+                  According to the ISTAT, not all the municipalities in each Provinces are taken into account 
+                  (see the details below)
+                  <br />
+                  <br />"))
+      
     })
     
     output$PLOT3 <- downloadHandler(
@@ -869,7 +878,7 @@ server <- function(input, output, session){
         file.copy(paste0(shinyPath, "data/PDF/Covid_APP_ReadMore_Provinces.pdf"), file)}
     )
 
-    #----
+    
   }
   
   #SIRD Models----
@@ -904,7 +913,10 @@ server <- function(input, output, session){
     })
 
     output$textSIRD1 <- renderText({
-      HTML(paste0("<b>The SIRD model describes the development of an epidemiological curve. 
+      HTML(paste0("<b>Note: Please select one province in the Province filter. If multiple provinces are selected the graph will display data for the first Province selected.</b>
+                  <br />
+                  <br />
+                  <b>The SIRD model describes the development of an epidemiological curve. 
                   <br />
                   <br />
                   In this application, the model parameters are considered dynamic. The number of lags represent the number of days used in the autoregressive models for the parameters. 
@@ -984,7 +996,10 @@ server <- function(input, output, session){
     {
       output$SIRDMap <- renderLeaflet({
         
+        if(input$selectDate1 %in% SIRDParam_Dataset$date){
+          
         selectDateSIRD <- input$selectDate1
+        output$s_d <- renderPrint({selectDateSIRD})
         #   selectDateSIRD="2020-05-04"
         ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
         
@@ -993,47 +1008,112 @@ server <- function(input, output, session){
         
         SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
         SIRDprovMap
+        }
+        
+        else{
+          selectDateSIRD <- max(SIRDParam_Dataset$date, na.rm = T)
+          output$s_d <- renderPrint({selectDateSIRD})
+          #   selectDateSIRD="2020-05-04"
+          ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
+          
+          # varMapSIRD <- input$varMapSIRD
+          varMapSIRD="Transmission rate"
+          
+          SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
+          SIRDprovMap
+        }
+        
+        
         
       })
       
       output$SIRDMap2 <- renderLeaflet({
         
-        selectDateSIRD <- input$selectDate1
-        #   selectDateSIRD="2020-05-04"
-        ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
-        
-        # varMapSIRD <- input$varMapSIRD
-        varMapSIRD="Recovery rate"
-        
-        SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
-        SIRDprovMap
+        if(input$selectDate1 %in% SIRDParam_Dataset$date){
+          selectDateSIRD <- input$selectDate1
+          output$s_d <- renderPrint({selectDateSIRD})
+          #   selectDateSIRD="2020-05-04"
+          ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
+          
+          # varMapSIRD <- input$varMapSIRD
+          varMapSIRD="Recovery rate"
+          
+          SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
+          SIRDprovMap
+        }
+        else{
+          selectDateSIRD <- max(SIRDParam_Dataset$date, na.rm = T)
+          output$s_d <- renderPrint({selectDateSIRD})
+          #   selectDateSIRD="2020-05-04"
+          ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
+          
+          # varMapSIRD <- input$varMapSIRD
+          varMapSIRD="Recovery rate"
+          
+          SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
+          SIRDprovMap
+        }
         
       })
       output$SIRDMap3 <- renderLeaflet({
         
-        selectDateSIRD <- input$selectDate1
-        #   selectDateSIRD="2020-05-04"
-        ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
-        
-        # varMapSIRD <- input$varMapSIRD
-        varMapSIRD="Mortality rate"
-        
-        SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
-        SIRDprovMap
+        if(input$selectDate1 %in% SIRDParam_Dataset$date){
+          selectDateSIRD <- input$selectDate1
+          output$s_d <- renderPrint({selectDateSIRD})
+            
+          selectDateSIRD <- input$selectDate1
+          #   selectDateSIRD="2020-05-04"
+          ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
+          
+          # varMapSIRD <- input$varMapSIRD
+          varMapSIRD="Mortality rate"
+          
+          SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
+          SIRDprovMap
+        }
+        else{
+          selectDateSIRD <- max(SIRDParam_Dataset$date, na.rm = T)
+          output$s_d <- renderPrint({selectDateSIRD})
+          
+          selectDateSIRD <- input$selectDate1
+          #   selectDateSIRD="2020-05-04"
+          ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
+          
+          # varMapSIRD <- input$varMapSIRD
+          varMapSIRD="Mortality rate"
+          
+          SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
+          SIRDprovMap
+        }
         
       })
       output$SIRDMap4 <- renderLeaflet({
-        
-        selectDateSIRD <- input$selectDate1
-        #   selectDateSIRD="2020-05-04"
-        ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
-        
-        # varMapSIRD <- input$varMapSIRD
-        varMapSIRD="Basic reproduction number"
-        
-        SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
-        SIRDprovMap
-        
+        if(input$selectDate1 %in% SIRDParam_Dataset$date){
+          selectDateSIRD <- input$selectDate1
+          output$s_d <- renderPrint({selectDateSIRD})
+          selectDateSIRD <- input$selectDate1
+          #   selectDateSIRD="2020-05-04"
+          ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
+          
+          # varMapSIRD <- input$varMapSIRD
+          varMapSIRD="Basic reproduction number"
+          
+          SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
+          SIRDprovMap
+        }
+        else{
+          selectDateSIRD <- max(SIRDParam_Dataset$date, na.rm = T)
+          output$s_d <- renderPrint({selectDateSIRD})
+          selectDateSIRD <- input$selectDate1
+          #   selectDateSIRD="2020-05-04"
+          ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
+          
+          # varMapSIRD <- input$varMapSIRD
+          varMapSIRD="Basic reproduction number"
+          
+          SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
+          SIRDprovMap
+        }
       })
     }
 

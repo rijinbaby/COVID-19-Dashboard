@@ -34,8 +34,9 @@ sidebar <- dashboardSidebar(
 )
 
 , selectInput(inputId='inReg'
-              , label='Region:'
-              , selected=FALSE
+              , label='Region*:'
+              # , selected=FALSE
+              , selected="Piemonte"
               , choices=list(
                 "Select a Region"=c("Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli Venezia Giulia","Lazio","Liguria","Lombardia","Marche","Molise","Piemonte","Puglia","Sardegna","Sicilia","Toscana","Trentino Alto Adige","Umbria","Valle d'Aosta","Veneto")
               )
@@ -46,7 +47,7 @@ sidebar <- dashboardSidebar(
 
 
 , selectInput(inputId='inProv'
-              , label='Province:'
+              , label='Province*:'
               # , selected=c("ALL")
               , choices=list( 
                 "Piemonte"=c("Alessandria", "Asti", "Biella", "Cuneo", "Novara", "Torino", "Verbano-Cusio-Ossola", "Vercelli")
@@ -74,7 +75,18 @@ sidebar <- dashboardSidebar(
               , selectize=TRUE
               ,width = "260px"
             )
-# ,dashboardFooter(left_text ="**If the Provice filter is selected then the Region filter is irresponsive. To work with Region filter clear the Province values selecter"
+
+          # ,tags$footer(
+          #   tags$p("*Provice filter selection makes the Region", br(),
+          #          "filter irresponsive. To work with Region", br(),
+          #          "filter clear the Province values selected"))
+
+          ,div(style="text-align:center","*Provice filter selection makes the Region", br(),
+                                          "filter irresponsive. To work with Region", br(),
+                                          "filter clear the Province values selected")
+
+
+# ,dashboardFooter(left_text ="*If the Provice filter is selected then the Region filter is irresponsive. To work with Region filter clear the Province values selecter"
 #                  , width = "100%", height = "160px", italic = TRUE, bold = TRUE,
 #                  style = "text-align:center; align: center; padding: 0px; margin: 0px;")
       
