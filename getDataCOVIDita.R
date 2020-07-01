@@ -74,10 +74,16 @@ downAndSaveDataPMC <- function(pcmRegLink="https://raw.github.com/pcm-dpc/COVID-
     readr::read_csv(paste0(dataPath, "PCM/dpc-covid19-ita-province.csv"))
   })
   
-  pcmProvData <- pcmProvData[which(pcmProvData$denominazione_provincia!="fuori Regione/P.A."),]
-  pcmProvData <- pcmProvData[which(pcmProvData$denominazione_provincia!="In fase di definizione/aggiornamento"),]
   pcmProvData <- pcmProvData[which(pcmProvData$denominazione_provincia!="In fase di definizione"),]
-  pcmProvData <- pcmProvData[,c(colnames(pcmProvData)[1:(length(colnames(pcmProvData))-2)])]
+  pcmProvData <- pcmProvData[which(pcmProvData$denominazione_provincia!="In fase di definizione/aggiornamento"),]
+  pcmProvData <- pcmProvData[which(pcmProvData$denominazione_provincia!="fuori Regione/P.A."),]
+  pcmProvData <- pcmProvData[which(pcmProvData$denominazione_provincia!="Fuori Regione / Provincia Autonoma"),]
+  pcmProvData <- pcmProvData[,c(colnames(pcmProvData)[1:(length(colnames(pcmProvData))-1)])]
+  
+  # pcmProvData <- pcmProvData[which(pcmProvData$denominazione_provincia!="fuori Regione/P.A."),]
+  # pcmProvData <- pcmProvData[which(pcmProvData$denominazione_provincia!="In fase di definizione/aggiornamento"),]
+  # pcmProvData <- pcmProvData[which(pcmProvData$denominazione_provincia!="In fase di definizione"),]
+  # pcmProvData <- pcmProvData[,c(colnames(pcmProvData)[1:(length(colnames(pcmProvData))-2)])]
   
   pcmProvData$denominazione_regione[pcmProvData$denominazione_regione=="P.A. Trento"] <- "Trentino Alto Adige"
   pcmProvData$denominazione_regione[pcmProvData$denominazione_regione=="P.A. Bolzano"] <- "Trentino Alto Adige"

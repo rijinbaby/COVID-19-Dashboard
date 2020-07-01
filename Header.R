@@ -4,10 +4,10 @@ header <- dashboardHeader(title = "COVID-19 ITALY",
                           ,dropdownMenuCustom( type = 'message',
                                               customSentence = customSentence,
                                               messageItem(
-                                                from = "ceeds@unimi.it",#'Feedback and suggestions',
-                                                message =  "",#paste0("ceeds@unimi.it" ),
+                                                from = "datamanager.demm@unimi.it",#'Feedback and suggestions',
+                                                message =  "",#paste0("datamanager.demm@unimi.it" ),
                                                 icon = icon("envelope"),
-                                                href = "mailto:ceeds@unimi.it"
+                                                href = "mailto:datamanager.demm@unimi.it"
                                               ),
                                               icon = icon('comment')
                           )
