@@ -1,11 +1,4 @@
-# #Install packages
-# if (!require("pacman")) install.packages("pacman")
-# pacman::p_load(tidyverse, readxl, writexl, RPostgreSQL, RPostgres, zoo)
-# 
-# #Load Packages
-# library(tidyverse)
-# library(readxl)
-# library(writexl)
+
 
 #Usefull Functions
 `%notin%` <- Negate(`%in%`)
@@ -79,11 +72,6 @@ downAndSaveDataPMC <- function(pcmRegLink="https://raw.github.com/pcm-dpc/COVID-
   pcmProvData <- pcmProvData[which(pcmProvData$denominazione_provincia!="fuori Regione/P.A."),]
   pcmProvData <- pcmProvData[which(pcmProvData$denominazione_provincia!="Fuori Regione / Provincia Autonoma"),]
   pcmProvData <- pcmProvData[,c(colnames(pcmProvData)[1:(length(colnames(pcmProvData))-1)])]
-  
-  # pcmProvData <- pcmProvData[which(pcmProvData$denominazione_provincia!="fuori Regione/P.A."),]
-  # pcmProvData <- pcmProvData[which(pcmProvData$denominazione_provincia!="In fase di definizione/aggiornamento"),]
-  # pcmProvData <- pcmProvData[which(pcmProvData$denominazione_provincia!="In fase di definizione"),]
-  # pcmProvData <- pcmProvData[,c(colnames(pcmProvData)[1:(length(colnames(pcmProvData))-2)])]
   
   pcmProvData$denominazione_regione[pcmProvData$denominazione_regione=="P.A. Trento"] <- "Trentino Alto Adige"
   pcmProvData$denominazione_regione[pcmProvData$denominazione_regione=="P.A. Bolzano"] <- "Trentino Alto Adige"

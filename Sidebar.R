@@ -93,28 +93,3 @@ sidebar <- dashboardSidebar(
     ) # sidebarmenu
           
 )  # dashboardSidebar
-
-
-
-
-
-
-
-
-# ,selectInput(inputId='inReg'
-#              , label='Regions:'
-#              #, selected="Lombardia"
-#              , choices=sort(unique(pcmTOTData$denominazione_regione))
-#              , multiple=FALSE
-#              , selectize=TRUE
-#              ,width = "260px"
-# )
-
-
-
-#  ,selectInput(inputId="Province"
-#                     , label="Choose Mortality Parameter"
-#                     , choices=c("Cumulative Case"
-#                                 , "Cumulative Rate")
-#                     , selected="Cumulative Case"),
-# 

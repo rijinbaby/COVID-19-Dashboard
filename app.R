@@ -2,8 +2,6 @@
 ###  shinydashboard   ###
 #########################
 
-#https://rstudio.github.io/shinydashboard/index.html
-
 #Options
 options(warn=-1)
 
@@ -47,12 +45,10 @@ cumulDeathsProv()
 italy_data()
 dropdownMenuCustom()
 customSentence_share()
-# customSentence()
 
 source("SIRModelParamCV_optimGG.R")
 source("SIRModelParam_15gg.R")
 paramComp <<- myParam_comp("Italy") #Added this line on the code
-#optimal_J <<- myFindOptimalLags(paramComp$transmission) #Added this line on the code
 optimal_J <<- 7
 last_day <<- max(pcmTOTData$data)
 SIRDParam_Dataset <<- SIRDParameterDataset()
@@ -84,33 +80,6 @@ server <- function(input, output, session){
   #"Provinces map"----
   {
     #"infobox"----
-    # output$total_box <- renderValueBox({
-    #   ifelse(info_box_data$confirmed_diff>=0
-    #          ,valueBox(paste0(info_box_data$confirmed," (+",info_box_data$confirmed_diff,")"), "Confirmed", icon = icon("user", lib = "glyphicon"),color = "red")
-    #          ,valueBox(paste0(info_box_data$confirmed," (",info_box_data$confirmed_diff,")"), "Confirmed", icon = icon("user", lib = "glyphicon"),color = "red")
-    #          )
-    # })
-    # output$active_box <- renderValueBox({
-    #   ifelse(info_box_data$active_diff>=0
-    #          ,valueBox(paste0(info_box_data$active," (+",info_box_data$active_diff,")"), "Active",color = "blue")
-    #          ,valueBox(paste0(info_box_data$active," (",info_box_data$active_diff,")"), "Active", color = "blue")
-    #          )
-    # })
-    # output$Recovered_box <- renderValueBox({
-    #   ifelse(info_box_data$recovered_diff>=0
-    #     ,valueBox(paste0(info_box_data$recovered," (+",info_box_data$recovered_diff,")" ), "Recovered", color = "green")
-    #     ,valueBox(paste0(info_box_data$recovered," (",info_box_data$recovered_diff,")" ), "Recovered", color = "green")
-    #     )
-    # })
-    # output$deceased_box <- renderValueBox({
-    #   ifelse(info_box_data$death_diff>=0
-    #     ,valueBox(paste0(info_box_data$death," (+",info_box_data$death_diff,")" ), "Deceased", color = "orange")
-    #     ,valueBox(paste0(info_box_data$death," (",info_box_data$death_diff,")" ), "Deceased", color = "orange")
-    #   )
-    # }) 
-    
-      # ip_date <- input$selectDate1
-      # info_box_data <- italy_data(ip_date)
     output$total_box <- renderValueBox({
       if(info_box_data$confirmed_diff>=0){
       valueBox(
@@ -121,7 +90,6 @@ server <- function(input, output, session){
             paste0(info_box_data$confirmed," (",info_box_data$confirmed_diff,")"), "CONFIRMED", icon = icon("user", lib = "glyphicon"),color = "red"
         )}
       })
-#  paste("CONFIRMED    ","Last Update:",rangeDate[2])
     output$active_box <- renderValueBox({
       if(info_box_data$active_diff>=0){
       valueBox(
@@ -274,8 +242,7 @@ server <- function(input, output, session){
         file.copy(paste0(shinyPath, "data/PDF/Covid_APP_ReadMore_Provinces.pdf"), file)}
     )
 
-    #----
-
+    
     # Plot the National prevalence index
     output$N_TS <- renderPlotly({
       
@@ -308,34 +275,6 @@ server <- function(input, output, session){
 #       }
 
     })
-
-    #----
-
-    #Last date Boxplot
-
-    # output$BoxPLTy <- renderPlotly({
-    # 
-    #   rangeDays <- input$selectDate2
-    # 
-    #   lastPrevIDX <- pcmTOTData %>%
-    #     ungroup() %>%
-    #     filter(data==rangeDays) %>%
-    #     select(prevIndex)
-    # 
-    # 
-    #   if(nrow(lastPrevIDX)>0){
-    # 
-    #     lastPrIDX <- lastPrevIDX$prevIndex/sqrt(sum(lastPrevIDX$prevIndex^2))
-    # 
-    #     IdxBox <- plot_ly(y = lastPrIDX, type = "box") %>%
-    #       layout(autosize = T, height = 290
-    #              , title = "Normalized rates")
-    # 
-    #     print(IdxBox)
-    # 
-    #   }
-    # 
-    # })
 
   }
 
@@ -518,10 +457,6 @@ server <- function(input, output, session){
       
     })
     
-    # "<b>Please, select more than one province. It is possible to plot <em> cumulative cases </em> or <em> cumulative rates </em>.</b>"
-    # , "<em> Cumulative rates</em>"
-    # , " are the ratio between the cumulative cases and the total population for the selected province multiplied by 100000."
-    
     output$textPLOT1 <- renderText({
       HTML(paste0("<b><em>Cumulative Rate</em></b>
                   are the ratio between the cumulative cases and the total population for the selected province multiplied by 100000.
@@ -552,8 +487,6 @@ server <- function(input, output, session){
       content = function(file) {
         file.copy(paste0(shinyPath, "data/PDF/Covid_APP_ReadMore_Timeseries_Plot1.pdf"), file)}
     )
-
-    #----
 
     # Plot the regions1 time series----
     # output$R_TS1 <- renderPlotly({
@@ -785,20 +718,6 @@ server <- function(input, output, session){
       
     })
     
-    # output$textPLOT2 <- renderText({
-    #   HTML(paste0("<b>Please, select one region. It is possible to plot <em> cumulative cases </em> or <em> cumulative rates </em>.</b>"
-    #               , "<em> Cumulative rates</em>"
-    #               , " are the ratio between the cumulative cases and the total population for the selected province multiplied by 100000."))
-    # })
-    # 
-    # output$PLOT2 <- downloadHandler(
-    #   filename = "Covid_APP_ReadMore_Timeseries_Plot2.pdf",
-    #   content = function(file) {
-    #     file.copy(paste0(shinyPath, "data/PDF/Covid_APP_ReadMore_Timeseries_Plot2.pdf"), file)}
-    # )
-      
-    
-    
     #Deaths Time Series----
     output$D_TS <- renderPlotly({
       
@@ -895,15 +814,7 @@ server <- function(input, output, session){
         varSIRpCV <- input$inProv[1]
       }
       
-      # varSIRpCV = "Torino"
       varLagpCV <- input$LagDaysCV
-      # varLagpCV = 7
-
-      #varCutDayCV <- as.numeric(input$CutDayCV)-as.numeric(as.Date("2020-02-23"))
-      # varCutDayCV=FALSE
-
-      # SIRDresults <- myTD_SIRD_model(prov=varSIRpCV, optJ=varLagpCV )
-      # SIRD_CV_plotP <- mySIRD_plot(results=SIRDresults, Province=varSIRpCV, j=varLagpCV )
       
       model_Trainer <- modelTrainer(parComp=paramComp, J=varLagpCV)
       SIRD_CV_plotP <- SIRD_plot(region=varSIRpCV, J=varLagpCV, models=model_Trainer, n_days=15)
@@ -929,9 +840,6 @@ server <- function(input, output, session){
 
     # SIRD time series----
     output$SIRDts <- renderPlotly({
-
-      # varSIRpCV <- input$SIRprovCV
-      # varSIRpCV = "Torino"
       
       if(is.null(input$inProv)){
         varSIRpCV="Torino"
@@ -941,13 +849,6 @@ server <- function(input, output, session){
       }
       
       varLagpCV <- input$LagDaysCV
-      # varLagpCV = 7
-
-      #varCutDayCV <- as.numeric(input$CutDayCV)-as.numeric(as.Date("2020-02-23"))
-      # varCutDayCV=FALSE
-
-      # SIRDresults <- myTD_SIRD_model(prov=varSIRpCV, optJ=varLagpCV )
-      # SIRD_CV_TimeS <- myTimeSeries(results=SIRDresults, Province=varSIRpCV, j=varLagpCV)
       
       model_Trainer <- modelTrainer(parComp=paramComp, J=varLagpCV)
       SIRD_CV_TimeS <- SIRDtimeSeries(region=varSIRpCV, J=varLagpCV, models=model_Trainer, d=15)
@@ -980,15 +881,20 @@ server <- function(input, output, session){
       content = function(file) {
         file.copy(paste0(shinyPath, "data/PDF/Covid_APP_ReadMore_Provinces.pdf"), file)}
     )
-    #----
+    
     output$textSIRD3 <- renderText({
-      HTML(paste0("<b>This plot shows the current values of a given parameter in each province at a certain point in time.
+      HTML(paste0("<b>The plot displays the current value of various parameters across provinces of Italy for the date selected</b>
                   <br />
                   <br />
-                  The data are computed daily and smoothed using a moving average on a 7-day period. 
+                  Note: If data is not available for the date selected in sidebar, the plot will display the latest available data.
+                  <br />
+                  The selected date is displayed above.
                   <br />
                   <br />
-                  Only the provinces for which the data are available are shown.</b>"))
+                  <b>The data are computed daily and are smoothed using the moving average on a 7-day period. 
+                  <br />
+                  <br />
+                  Only provinces which has the parameter data are displayed in the plot.</b>"))
     })
 
 
@@ -1000,10 +906,9 @@ server <- function(input, output, session){
           
         selectDateSIRD <- input$selectDate1
         output$s_d <- renderPrint({selectDateSIRD})
-        #   selectDateSIRD="2020-05-04"
+        
         ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
         
-        # varMapSIRD <- input$varMapSIRD
         varMapSIRD="Transmission rate"
         
         SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
@@ -1013,18 +918,14 @@ server <- function(input, output, session){
         else{
           selectDateSIRD <- max(SIRDParam_Dataset$date, na.rm = T)
           output$s_d <- renderPrint({selectDateSIRD})
-          #   selectDateSIRD="2020-05-04"
+          
           ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
           
-          # varMapSIRD <- input$varMapSIRD
           varMapSIRD="Transmission rate"
           
           SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
           SIRDprovMap
         }
-        
-        
-        
       })
       
       output$SIRDMap2 <- renderLeaflet({
@@ -1032,10 +933,9 @@ server <- function(input, output, session){
         if(input$selectDate1 %in% SIRDParam_Dataset$date){
           selectDateSIRD <- input$selectDate1
           output$s_d <- renderPrint({selectDateSIRD})
-          #   selectDateSIRD="2020-05-04"
+          
           ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
           
-          # varMapSIRD <- input$varMapSIRD
           varMapSIRD="Recovery rate"
           
           SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
@@ -1044,10 +944,9 @@ server <- function(input, output, session){
         else{
           selectDateSIRD <- max(SIRDParam_Dataset$date, na.rm = T)
           output$s_d <- renderPrint({selectDateSIRD})
-          #   selectDateSIRD="2020-05-04"
+          
           ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
           
-          # varMapSIRD <- input$varMapSIRD
           varMapSIRD="Recovery rate"
           
           SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
@@ -1060,12 +959,9 @@ server <- function(input, output, session){
         if(input$selectDate1 %in% SIRDParam_Dataset$date){
           selectDateSIRD <- input$selectDate1
           output$s_d <- renderPrint({selectDateSIRD})
-            
-          selectDateSIRD <- input$selectDate1
-          #   selectDateSIRD="2020-05-04"
+          
           ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
           
-          # varMapSIRD <- input$varMapSIRD
           varMapSIRD="Mortality rate"
           
           SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
@@ -1075,11 +971,8 @@ server <- function(input, output, session){
           selectDateSIRD <- max(SIRDParam_Dataset$date, na.rm = T)
           output$s_d <- renderPrint({selectDateSIRD})
           
-          selectDateSIRD <- input$selectDate1
-          #   selectDateSIRD="2020-05-04"
           ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
           
-          # varMapSIRD <- input$varMapSIRD
           varMapSIRD="Mortality rate"
           
           SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
@@ -1088,14 +981,13 @@ server <- function(input, output, session){
         
       })
       output$SIRDMap4 <- renderLeaflet({
+        
         if(input$selectDate1 %in% SIRDParam_Dataset$date){
           selectDateSIRD <- input$selectDate1
           output$s_d <- renderPrint({selectDateSIRD})
-          selectDateSIRD <- input$selectDate1
-          #   selectDateSIRD="2020-05-04"
+          
           ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
           
-          # varMapSIRD <- input$varMapSIRD
           varMapSIRD="Basic reproduction number"
           
           SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
@@ -1104,31 +996,22 @@ server <- function(input, output, session){
         else{
           selectDateSIRD <- max(SIRDParam_Dataset$date, na.rm = T)
           output$s_d <- renderPrint({selectDateSIRD})
-          selectDateSIRD <- input$selectDate1
-          #   selectDateSIRD="2020-05-04"
+          
           ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
           
-          # varMapSIRD <- input$varMapSIRD
           varMapSIRD="Basic reproduction number"
           
           SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
           SIRDprovMap
         }
+        
       })
     }
-
-    
-    
 
   }
 
 }
 
-#-----------------
+# shinyApp call-----------------
 
 shinyApp(ui, server)
-
-#-----------------
-#-----------------
-#-----------------
-

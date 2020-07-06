@@ -1,4 +1,4 @@
-header <- dashboardHeader(title = "COVID-19 ITALY",
+header <- dashboardHeader(title = "COVID-Pro ITALY",
                           disable = FALSE,
                           titleWidth = 270
                           ,dropdownMenuCustom( type = 'message',
@@ -34,33 +34,4 @@ header <- dashboardHeader(title = "COVID-19 ITALY",
                                               )
                                               
                           )
-                          )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                     )
