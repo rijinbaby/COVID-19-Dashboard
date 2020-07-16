@@ -834,76 +834,102 @@ SIRDParameterDataset <- function() {
 
 
 SIRD_Map <- function(database, var) {
-  if (var=="Recovery rate") {
-    database <- database[which(database$`Recovery rate`>0),]
+  
+  colnames(database)[5:8] <- c("Transmission_rate","Recovery_rate","Mortality_rate","Basic_reproduction_number")
+  
+  if (var=="Recovery Rate") {
+    database <- database[which(database$Recovery_rate>0),]
   }
   
-  discrVariable <- round(database[[var]],3)
+  # geojson file for Italy
+  geo_italy <- geojsonio::geojson_read("~/Covid-19-Dashboard/data/geo_italy.geojson", what = "sp")
   
-  database$discrVariable <- discrVariable
-  # sort(discrVariable)
-  discrLevel <- as.numeric(quantile(discrVariable, probs = seq(0, 1, length.out = 5)))
+  #
+  pal <- leaflet::colorNumeric(c("blue","yellow","red"), NULL)  # viridis   YlOrRd  RdYlBu
   
-  getColor <- function(database) {
-    if (var=="Recovery rate") {
-      sapply(database$discrVariable, function(discrVariable) {
-        if(discrVariable<= discrLevel[2]) {
-          "black"
-        } else if(discrVariable <= discrLevel[3]) {
-          "red"
-        } else if(discrVariable <= discrLevel[4]) {
-          "orange"
-        }else if(discrVariable > discrLevel[4]) {
-          "darkgreen"
-        } 
-      })
-    } else if (var=="Basic reproduction number") {
-      sapply(database$discrVariable, function(discrVariable) {
-        if(discrVariable < 0.5) {
-          "darkgreen"
-        } else if(discrVariable < 1) {
-          "orange"
-        } else if(discrVariable < 2) {
-          "red"
-        }else if(discrVariable >= 2) {
-          "black"
-        }
-      })
-    }else {
-      sapply(database$discrVariable, function(discrVariable) {
-        if(discrVariable <= discrLevel[2]) {
-          "darkgreen"
-        } else if(discrVariable <= discrLevel[3]) {
-          "orange"
-        } else if(discrVariable <= discrLevel[4]) {
-          "red"
-        }else if(discrVariable > discrLevel[4]) {
-          "black"
-        }
-      })
-    }
+  # merge geojson with our data
+  db_geo <- sp::merge(geo_italy,database,by.x ="prov_name",by.y="province_name")
+  
+  db_geo$Recovery_rate <- round(db_geo$Recovery_rate,3)
+  db_geo$Transmission_rate <- round(db_geo$Transmission_rate,3)
+  db_geo$Mortality_rate <- round(db_geo$Mortality_rate,3)
+  db_geo$Basic_reproduction_number <- round(db_geo$Basic_reproduction_number,3)
+  
+  if (var=="Recovery Rate") {
+   
+     labels <- sprintf(
+      "<strong>Province: %s</strong><br/> %s: %g<br/>Date: %s",
+      db_geo$prov_name, var, round(db_geo$Recovery_rate,3),db_geo$date
+    ) %>% lapply(htmltools::HTML)
+     
+     # labels1 <- sprintf(
+     #   "<strong>Province: %s</strong><br/> No Data Available",
+     #   db_geo$prov_name
+     # ) %>% lapply(htmltools::HTML)
+    # ifelse(is.na(values),labels1,labels)
+     
+    provMap <- leaflet(db_geo) %>%
+      setView(lat=41.8719, lng=12.5674,zoom=6 ) %>%
+      # fitBounds(lng1 = 15,lat1 =43 ,lng2 = 9,lat2 =36 ) %>%
+      addTiles() %>%
+      addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                  fillColor = ~pal(Recovery_rate),
+                  label = labels) %>%
+      addLegend(pal = pal, values = ~Recovery_rate, opacity = 0.7, title = "Recovery Rate",
+                position = "topright",na.label = "No Data")
   }
   
+  else if (var=="Transmission Rate") {
+    
+    labels <- sprintf(
+      "<strong>Province: %s</strong><br/> %s: %g<br/>Date: %s",
+      db_geo$prov_name, var, round(db_geo$Transmission_rate,3),db_geo$date
+    ) %>% lapply(htmltools::HTML)
+    
+    provMap <- leaflet(db_geo) %>%
+      setView(lat=41.8719, lng=12.5674,zoom=6 ) %>%
+      # fitBounds(lng1 = 15,lat1 =43 ,lng2 = 9,lat2 =36 ) %>%
+      addTiles() %>%
+      addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                  fillColor = ~pal(Transmission_rate),
+                  label = labels) %>%
+      addLegend(pal = pal, values = ~Transmission_rate, opacity = 0.7, title = "Transmission Rate",
+                position = "topright",na.label = "No Data")
+  }
   
-  setLabel <- paste(sep = "<br/>"
-                    , paste0("<b>", toupper(database$province_name), "</b>")
-                    , paste0(var,": ", round(database[[var]],3))
-  )
+  else if (var=="Mortality Rate") {
+    labels <- sprintf(
+      "<strong>Province: %s</strong><br/> %s: %g<br/>Date: %s",
+      db_geo$prov_name, var, round(db_geo$Mortality_rate,3),db_geo$date
+    ) %>% lapply(htmltools::HTML)
+    
+    provMap <- leaflet(db_geo) %>%
+      setView(lat=41.8719, lng=12.5674,zoom=6 ) %>%
+      # fitBounds(lng1 = 15,lat1 =43 ,lng2 = 9,lat2 =36 ) %>%
+      addTiles() %>%
+      addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                  fillColor = ~pal(Mortality_rate),
+                  label = labels) %>%
+      addLegend(pal = pal, values = ~Mortality_rate, opacity = 0.7, title = "Mortality Rate",
+                position = "topright",na.label = "No Data")
+  }    
   
-  
-  #Map building----
-  icons <- awesomeIcons(
-    icon = 'clipboard',
-    iconColor = 'white',
-    library = 'ion',
-    markerColor = getColor(database)
-  )
-  
-  provMap <- leaflet(data = database) %>% 
-    addTiles() %>%
-    addAwesomeMarkers(database$long, database$lat
-                      , icon=icons
-                      , popup = ~setLabel)
+  else if (var=="Basic Reproduction Number") {
+    labels <- sprintf(
+      "<strong>Province: %s</strong><br/> %s: %g<br/>Date: %s",
+      db_geo$prov_name, var, round(db_geo$Basic_reproduction_number,3),db_geo$date
+    ) %>% lapply(htmltools::HTML)
+    
+    provMap <- leaflet(db_geo) %>%
+      setView(lat=41.8719, lng=12.5674,zoom=6 ) %>%
+      # fitBounds(lng1 = 15,lat1 =43 ,lng2 = 9,lat2 =36 ) %>%
+      addTiles() %>%
+      addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                  fillColor = ~pal(Basic_reproduction_number),
+                  label = labels) %>%
+      addLegend(pal = pal, values = ~Basic_reproduction_number, opacity = 0.7, title = "Basic Reproduction Number",
+                position = "topright",na.label = "No Data")
+  } 
   
   #Map plot----
   return(provMap)

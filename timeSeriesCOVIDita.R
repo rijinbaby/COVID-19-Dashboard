@@ -199,104 +199,15 @@ ProvinceTS <- function(database, variable){
       plotly::layout(xaxis = list(title = "Days")
                      , yaxis = list (title = "Total Cases"))
     
-      # plotly::layout(title=paste0("Total Cases rates until the "
-      #                             , paste0(str_split(untilDate, "-")[[1]][3]
-      #                                      , "/",  str_split(untilDate, "-")[[1]][2])))
-    
-#     Plot<-ggplot(data=database, aes(x=Date, color=Province)) +
-#       geom_line(aes(y=`Total Cases`)) +
-#       geom_point(aes(y=`Total Cases`), size=1) +
-#       labs(
-#         x = "Dates",
-#         y = "Cumulative cases",
-#         color="Provinces",
-#         title=paste0("Cumulative cases until the "
-#                      , paste0(str_split(untilDate, "-")[[1]][3]
-#                               , "/",  str_split(untilDate, "-")[[1]][2])
-#                      , " in the provinces selected")) +
-# 					 theme(legend.title = element_text(colour="black", face = "bold"))
     
   }
   
   n_plot <- n_plot %>% layout(legend = list(x = 100, y = 0.5))
   
   return(print(x = n_plot))
-
-  # GGPlotly<-ggplotly(Plot)
-  # 
-  # GGPrlotly <- GGPlotly %>%
-  #   layout(xaxis = list(visible=FALSE))
-
-  # return(print(x = GGPrlotly))
   
 }
 
-# RTS1-------------------------------------------
-
-# RegionTS1 <- function(database, rangeDays, variable){
-#   options(warn=-1)
-#   
-#   regione <- unique(database$denominazione_regione)
-#   
-#   if(variable=="PrevIDX"){
-#     
-#     database <- database[,c("denominazione_regione"
-#                             , "denominazione_provincia"
-#                             , "data"
-#                             , "prevIndex")]
-#     
-#     colnames(database) <- c("Regione", "Provincia", "Date", "Cumulative rates")
-#     
-#     Plot<-ggplot(data=database, aes(x=Date, color=Provincia)) +
-#       geom_line(aes(y=`Cumulative rates`)) +
-#       labs(
-#         x = "Dates",
-#         y = "Cumulative rates",
-#         color="Province",
-#         title=paste0("Cumulative rates until the "
-#                      , paste0(str_split(rangeDays, "-")[[1]][3]
-#                               , "/",  str_split(rangeDays, "-")[[1]][2])
-#                      , " in ", regione, " by province")) +
-# 					 theme(legend.title = element_text(color="black", face = "bold"))
-#     
-#     GGPlotly<-ggplotly(Plot)
-#     
-#     GGRglotly <- GGPlotly %>%
-#       layout(xaxis = list(visible=FALSE)
-#              , showlegend = TRUE)
-#     
-#   } else if(variable=="Cases"){
-#     
-#     database <- database[,c("denominazione_regione"
-#                             , "denominazione_provincia"
-#                             , "data"
-#                             , "totale_casi.x")]
-#     
-#     colnames(database) <- c("Regione", "Provincia", "Date", "Province Cases")
-#     
-#     Plot<-ggplot(data=database, aes(x=Date, color=Provincia)) +
-#       geom_line(aes(y=`Province Cases`)) +
-#       labs(
-#         x = "Dates",
-#         y = "Cumulative cases",
-#         color="Province",
-#         title=paste0("Cumulative cases until the "
-#                      , paste0(str_split(rangeDays, "-")[[1]][3]
-#                               , "/",  str_split(rangeDays, "-")[[1]][2])
-#                      , " in ", regione, " by province")) +
-# 					 theme(legend.title = element_text(color="black", face = "bold"))
-#     
-#     GGPlotly<-ggplotly(Plot)
-#     
-#     GGRglotly <- GGPlotly %>%
-#       layout(xaxis = list(visible=FALSE)
-#              , showlegend = TRUE)
-#     
-#   }
-#   
-#   return(print(x = GGRglotly))
-#   
-# }
 
 #RTS2-------------------------------------------
 
@@ -334,32 +245,6 @@ RegionTS2 <- function(database, rangeDays, variable){
                                        
     # n_plot <- n_plot %>% layout(legend = list(x = 0.1, y = 0.9))
     
-    
-    # Plot2<-ggplot(data=database, aes(x=Date)) +
-    #   geom_line(aes(y = `Recovered rates`, color="Recovered rates"), size = 1) +
-    #   geom_line(aes(y = `Deceased rates`, color="Deceased rates"), size = 1) +
-    #   geom_line(aes(y = `Total rates`, color="Total rates"), size = 1) +
-    #   geom_point(aes(y=`Recovered rates`), size=0.5) +
-    #   geom_point(aes(y=`Deceased rates`), size=0.5) +
-    #   geom_point(aes(y=`Total rates`), size=0.5) +
-    #   labs(
-    #     x = "Dates",
-    #     y = "Cumulative rates",
-    #     color="Legend",
-    #     title=paste0("Cumulative rates until the "
-    #                  , paste0(str_split(rangeDays, "-")[[1]][3]
-    #                           , "/",  str_split(rangeDays, "-")[[1]][2])
-    #                  , " in ", regione)) +
-    #   scale_color_manual(values = colors) +
-    #   theme(legend.title = element_text(color="black", face = "bold"))+
-    #   guides(color=guide_legend("Variables"))
-    # 
-    # GGPlotly2<-ggplotly(Plot2)
-    # 
-    # GGRglotly2 <- GGPlotly2 %>%
-    #   layout(xaxis = list(visible=FALSE)
-    #          , showlegend = TRUE)
-    
   } else if(variable=="Cases"){
     
     database <- database[,c("denominazione_regione"
@@ -388,32 +273,6 @@ RegionTS2 <- function(database, rangeDays, variable){
                                                       #          , "/",  str_split(rangeDays, "-")[[1]][2])
                                                       # , " in ", regione)
                                        ,legend = list(x = 0.1, y = 0.9))
-    
-    
-    # Plot2<-ggplot(data=database, aes(x=Date)) +
-    #   geom_line(aes(y = `Recovered cases`, color="Recovered cases"), size = 1, show.legend = F) +
-    #   geom_line(aes(y = `Deceased cases`, color="Deceased cases"), size = 1, show.legend = F) +
-    #   geom_line(aes(y = `Total cases`, color="Total cases"), size = 1, show.legend = F) +
-    #   geom_point(aes(y=`Recovered cases`), size=0.5) +
-    #   geom_point(aes(y=`Deceased cases`), size=0.5) +
-    #   geom_point(aes(y=`Total cases`), size=0.5) +
-    #   labs(
-    #     x = "Dates",
-    #     y = "Cumulative cases",
-    #     color="Variables",
-    #     title=paste0("Cumulative cases until the "
-    #                  , paste0(str_split(rangeDays, "-")[[1]][3]
-    #                           , "/",  str_split(rangeDays, "-")[[1]][2])
-    #                  , " in ", regione)) +
-    #   scale_color_manual(values = colors) +
-    #   theme(legend.title = element_text(color="black", face = "bold"))+
-    #   guides(color=guide_legend("Variables"))
-    # 
-    # GGPlotly2<-ggplotly(Plot2)
-    # 
-    # GGRglotly2 <- GGPlotly2 %>%
-    #   layout(xaxis = list(visible=FALSE)
-    #          , showlegend = TRUE)
     
   }
   
@@ -459,30 +318,8 @@ RegionTS3 <- function(database, rangeDays, variable){
                                        # , paste0(str_split(rangeDays, "-")[[1]][3]
                                        #          , "/",  str_split(rangeDays, "-")[[1]][2])
                                        # , " in ", regione)
-                                       ,legend = list(x = 0.1, y = 0.9))
-    
-    # Plot2<-ggplot(data=database, aes(x=Date)) +
-    #   geom_line(aes(y = `Hospit. sympt. rates`, color = "Hospit. sympt. rates"), size = 1) +
-    #   geom_line(aes(y = `Intens. care rates`, color = "Intens. care rates"), size = 1) +
-    #   geom_line(aes(y = `Home isol. rates`, color = "Home isol. rates"), size = 1) +
-    #   geom_line(aes(y = `Tot. pos. rates`, color = "Tot. pos. rates"), size = 1) +
-    #   labs(
-    #     x = "Dates",
-    #     y = "Rates",
-    #     color="Legend",
-    #     title=paste0("Rates until the "
-    #                  , paste0(str_split(rangeDays, "-")[[1]][3]
-    #                           , "/",  str_split(rangeDays, "-")[[1]][2])
-    #                  , " in ", regione)) +
-    #   scale_color_manual(values = colors) +
-    #   theme(legend.title = element_text(color="black", face = "bold"))+
-    #   guides(color=guide_legend("Variables"))
-    # 
-    # GGPlotly2<-ggplotly(Plot2)
-    # 
-    # GGRglotly2 <- GGPlotly2 %>%
-    #   layout(xaxis = list(visible=FALSE)
-    #          , showlegend = TRUE)
+                                       ,legend = list(x = 0.7, y = 0.9))
+
     
   } else if(variable=="Cases"){
     
@@ -515,30 +352,8 @@ RegionTS3 <- function(database, rangeDays, variable){
                                        # , paste0(str_split(rangeDays, "-")[[1]][3]
                                        #          , "/",  str_split(rangeDays, "-")[[1]][2])
                                        # , " in ", regione)
-                                       ,legend = list(x = 0.1, y = 0.9))
-    
-    # Plot2<-ggplot(data=database, aes(x=Date)) +
-    #   geom_line(aes(y = `Hospit. sympt. cases`, color = "Hospit. sympt. cases"), size = 1) +
-    #   geom_line(aes(y = `Intens. care cases`, color = "Intens. care cases"), size = 1) +
-    #   geom_line(aes(y = `Home isol. cases`, color = "Home isol. cases"), size = 1) +
-    #   geom_line(aes(y = `Tot. pos. cases`, color = "Tot. pos. cases"), size = 1) +
-    #   labs(
-    #     x = "Dates",
-    #     y = "Cases",
-    #     color="Variables",
-    #     title=paste0("Cases until the "
-    #                  , paste0(str_split(rangeDays, "-")[[1]][3]
-    #                           , "/",  str_split(rangeDays, "-")[[1]][2])
-    #                  , " in ", regione)) +
-    #   scale_color_manual(values = colors) +
-    #   theme(legend.title = element_text(color="black", face = "bold"))+
-    #   guides(color=guide_legend("Variables"))
-    # 
-    # GGPlotly2<-ggplotly(Plot2)
-    # 
-    # GGRglotly2 <- GGPlotly2 %>%
-    #   layout(xaxis = list(visible=FALSE)
-    #          , showlegend = TRUE)
+                                       ,legend = list(x = 0.7, y = 0.9))
+
     
   }
   

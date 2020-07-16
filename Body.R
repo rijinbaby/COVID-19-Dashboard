@@ -231,33 +231,39 @@ body <- dashboardBody(
                        )
               )
             )
-            #---  tabPanel("Cumulative Case",withSpinner(leafletOutput("provinceMap",height = "690px"))),
-            ,fluidRow( 
-              tabBox( width = 9,height = "470px"
-                             ,tabPanel("Transmission Rate",withSpinner(leafletOutput("SIRDMap",height = "460px")))
-                             ,tabPanel("Recovery Rate",withSpinner(leafletOutput("SIRDMap2",height = "460px")))
-                             ,tabPanel("Mortality Rate",withSpinner(leafletOutput("SIRDMap3",height = "460px")))
-                             ,tabPanel("Basic Reproduction Number",withSpinner(leafletOutput("SIRDMap4",height = "460px")))
-                     )
-              
-              ,column(width =3,
-                      box(width = NULL,height = 135,title = "Selected Date for the Plot:", status = "info",
-                      verbatimTextOutput("s_d")))
-              ,column(width = 3,
-                     box(width = NULL, height = 370
-                         , status = "info"
-                         , h5(class = "text-muted"
-                              , br()
-                              , uiOutput(outputId = "textSIRD3")
-                              , style = "color : black;"
-                         )
-                     )
-                     
+            
+            ,fluidRow(
+              column(width = 12,
+                      box(width = NULL, height = 135
+                          # , title = "The below plots displays the current parameters values across provinces of Italy for the date selected"
+                          , status = "info"
+                          , h5(class = "text-muted"
+                               , br()
+                               , uiOutput(outputId = "textSIRD3")
+                               , style = "color : black;"
+                          )
+                      )
               )
+              
+              # ,column(width =3,
+              #        box(width = NULL,height = 135,title = "Selected Date for the Plot:", status = "info"
+              #            # ,verbatimTextOutput("s_d")
+              #            ))
             )
             
+            ,fluidRow(
+              tabBox( width = 6,height = "700px"
+                      ,tabPanel("Transmission Rate",withSpinner(leafletOutput("SIRDMap",height = "690px")))
+                      ,tabPanel("Recovery Rate",withSpinner(leafletOutput("SIRDMap2",height = "690px")))
+                )
+              
+              ,tabBox( width = 6,height = "700px"
+                      ,tabPanel("Mortality Rate",withSpinner(leafletOutput("SIRDMap3",height = "690px")))
+                      ,tabPanel("Basic Reproduction Number",withSpinner(leafletOutput("SIRDMap4",height = "690px")))
+              )
+     
+         )
+    
     )
-    
-    
   )
 )

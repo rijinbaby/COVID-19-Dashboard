@@ -1,6 +1,5 @@
-#########################
-###  shinydashboard   ###
-#########################
+
+###  COVID-19 shinydashboard   ###
 
 #Options
 options(warn=-1)
@@ -15,6 +14,7 @@ pacman::p_load(shiny, shinydashboard, shinydashboardPlus, leaflet, tidyverse, pl
   library(shiny)
   library(shinydashboard)
   library(shinydashboardPlus)
+  library(shinycssloaders)
   #-
   library(tidyverse)
   library(leaflet)
@@ -24,7 +24,6 @@ pacman::p_load(shiny, shinydashboard, shinydashboardPlus, leaflet, tidyverse, pl
   library(geojsonio)
   library(sp)
   library(htmltools)
-  library(shinycssloaders)
 }
 
 #Usefull Functions
@@ -162,6 +161,7 @@ server <- function(input, output, session){
       
     })
     
+    
     output$textPres <- renderText({
       HTML(paste0("The COVID-19 outbreak in Italy has spread mainly in northern regions, particularly in Lombardy. 
                   However, even within the same region the virus has spread irregularly from province to province, producing real epicenters of infection in some provinces but also affecting other areas with relatively lower intensity.
@@ -178,11 +178,11 @@ server <- function(input, output, session){
                   Dashboard developed by: L.Ferrari, G.Gerardi, G.Manzi, A.Micheletti, F.Nicolussi, S.Salini
                   <br />
                   <br />
-                  We thank students R. Baby, A. Iordache, A. Singh and N. Velardo for their contribution"))
+                  We thank interns R. Baby, A. Iordache, A. Singh and N. Verardo for their contribution."))
     })
     
    
-     #----
+    
     
     # Plot the Deaths prevalence index----
     output$Drates_TS <- renderPlotly({
@@ -836,8 +836,7 @@ server <- function(input, output, session){
                   This is a preliminary model whose uncertainty grows as the number of days goes by.</b>"))
     })
 
-    #----
-
+    
     # SIRD time series----
     output$SIRDts <- renderPlotly({
       
@@ -883,18 +882,13 @@ server <- function(input, output, session){
     )
     
     output$textSIRD3 <- renderText({
-      HTML(paste0("<b>The plot displays the current value of various parameters across provinces of Italy for the date selected</b>
+      HTML(paste0("<b>The below plots displays the model parameter values across provinces of Italy for the date selected
                   <br />
                   <br />
-                  Note: If data is not available for the date selected in sidebar, the plot will display the latest available data.
-                  <br />
-                  The selected date is displayed above.
+                  The data are computed daily and are smoothed using the moving average on a 7-day period. Only provinces which has the parameter data are displayed in the plot.</b>
                   <br />
                   <br />
-                  <b>The data are computed daily and are smoothed using the moving average on a 7-day period. 
-                  <br />
-                  <br />
-                  Only provinces which has the parameter data are displayed in the plot.</b>"))
+                  Note: If data is not available for the date selected in sidebar, the plot will display the latest available data."))
     })
 
 
@@ -905,11 +899,11 @@ server <- function(input, output, session){
         if(input$selectDate1 %in% SIRDParam_Dataset$date){
           
         selectDateSIRD <- input$selectDate1
-        output$s_d <- renderPrint({selectDateSIRD})
+        # output$s_d <- renderPrint({selectDateSIRD})
         
         ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
         
-        varMapSIRD="Transmission rate"
+        varMapSIRD="Transmission Rate"
         
         SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
         SIRDprovMap
@@ -917,11 +911,11 @@ server <- function(input, output, session){
         
         else{
           selectDateSIRD <- max(SIRDParam_Dataset$date, na.rm = T)
-          output$s_d <- renderPrint({selectDateSIRD})
+          # output$s_d <- renderPrint({selectDateSIRD})
           
           ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
           
-          varMapSIRD="Transmission rate"
+          varMapSIRD="Transmission Rate"
           
           SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
           SIRDprovMap
@@ -932,22 +926,22 @@ server <- function(input, output, session){
         
         if(input$selectDate1 %in% SIRDParam_Dataset$date){
           selectDateSIRD <- input$selectDate1
-          output$s_d <- renderPrint({selectDateSIRD})
+          # output$s_d <- renderPrint({selectDateSIRD})
           
           ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
           
-          varMapSIRD="Recovery rate"
+          varMapSIRD="Recovery Rate"
           
           SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
           SIRDprovMap
         }
         else{
           selectDateSIRD <- max(SIRDParam_Dataset$date, na.rm = T)
-          output$s_d <- renderPrint({selectDateSIRD})
+          # output$s_d <- renderPrint({selectDateSIRD})
           
           ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
           
-          varMapSIRD="Recovery rate"
+          varMapSIRD="Recovery Rate"
           
           SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
           SIRDprovMap
@@ -958,22 +952,22 @@ server <- function(input, output, session){
         
         if(input$selectDate1 %in% SIRDParam_Dataset$date){
           selectDateSIRD <- input$selectDate1
-          output$s_d <- renderPrint({selectDateSIRD})
+          # output$s_d <- renderPrint({selectDateSIRD})
           
           ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
           
-          varMapSIRD="Mortality rate"
+          varMapSIRD="Mortality Rate"
           
           SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
           SIRDprovMap
         }
         else{
           selectDateSIRD <- max(SIRDParam_Dataset$date, na.rm = T)
-          output$s_d <- renderPrint({selectDateSIRD})
+          # output$s_d <- renderPrint({selectDateSIRD})
           
           ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
           
-          varMapSIRD="Mortality rate"
+          varMapSIRD="Mortality Rate"
           
           SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
           SIRDprovMap
@@ -984,22 +978,22 @@ server <- function(input, output, session){
         
         if(input$selectDate1 %in% SIRDParam_Dataset$date){
           selectDateSIRD <- input$selectDate1
-          output$s_d <- renderPrint({selectDateSIRD})
+          # output$s_d <- renderPrint({selectDateSIRD})
           
           ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
           
-          varMapSIRD="Basic reproduction number"
+          varMapSIRD="Basic Reproduction Number"
           
           SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
           SIRDprovMap
         }
         else{
           selectDateSIRD <- max(SIRDParam_Dataset$date, na.rm = T)
-          output$s_d <- renderPrint({selectDateSIRD})
+          # output$s_d <- renderPrint({selectDateSIRD})
           
           ProvDB_SIRD <- SIRDParam_Dataset[which(SIRDParam_Dataset$date==selectDateSIRD),]
           
-          varMapSIRD="Basic reproduction number"
+          varMapSIRD="Basic Reproduction Number"
           
           SIRDprovMap <- SIRD_Map(database=ProvDB_SIRD, var=varMapSIRD)
           SIRDprovMap
