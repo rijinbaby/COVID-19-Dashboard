@@ -24,7 +24,12 @@ nat_min_max <- function(totalPrevIDX){
            , yaxis = list (title = "Cumulative rates")
            , legend=list(title=list(text='Legend')))
   
-  IdxPlot <- IdxPlot %>% layout(legend = list(x = 0.1, y = 0.9))
+  IdxPlot <- IdxPlot %>% config(displaylogo = FALSE,
+                                modeBarButtonsToRemove = c("zoomIn2d", "zoomOut2d","pan2d","autoScale2d"
+                                                           ,"resetScale2d","zoom3d","zoom2d","toggleSpikelines"
+                                                           ,"hoverCompareCartesian","toImage"))
+  IdxPlot <- IdxPlot %>% layout(legend = list(x = 0.05, y = 0.9),hovermode = 'compare')
+              
   
   return(print(x = IdxPlot))
 }
@@ -60,28 +65,6 @@ death_rate_home <- function(database, variable){
       
     return(print(x = n_plot))
     
-    # title=paste0("Death rates until the "
-    #              , paste0(str_split(untilDate, "-")[[1]][3]
-    #                       , "/",  str_split(untilDate, "-")[[1]][2])
-    #              , " at provincial level")) +
-    
-    # Plot<-ggplot(data=database, aes(x=Date, color=Province)) +
-    #   geom_line(aes(y=`Death rates`)) +
-    #   geom_point(aes(y=`Death rates`), size=1) +
-    #   labs(
-    #     x = "Dates",
-    #     #y = "Death rates",
-    #     color="Provinces",
-    #     title=paste0("Province Level Death Rates")) +
-    #   theme(legend.position = "none"
-    #         ,legend.title = element_text(colour="black", face = "bold"))
-    # 
-    # GGPlotly<-ggplotly(Plot)
-    # 
-    # GGPrlotly <- GGPlotly %>%
-    #   layout(xaxis = list(visible=FALSE))
-    # 
-    # return(print(x = GGPrlotly))
   }
 
 deathTS <- function(database, variable){
@@ -163,24 +146,8 @@ ProvinceTS <- function(database, variable){
                           "Date: %{x}<br>",
                           "Cumulative Rate.: %{y}")) %>% 
       plotly::layout(xaxis = list(title = "Days")
-                   , yaxis = list (title = "Death Rates"))
-      # plotly::layout(title=paste0("Cumulative rates until the "
-      #                                                  , paste0(str_split(untilDate, "-")[[1]][3]
-      #                                                           , "/",  str_split(untilDate, "-")[[1]][2])))
-    
-#     Plot<-ggplot(data=database, aes(x=Date, color=Province)) +
-#       geom_line(aes(y=`Cumulative rates`)) +
-#       geom_point(aes(y=`Cumulative rates`), size=1) +
-#       labs(
-#         x = "Dates",
-#         y = "Cumulative rates",
-#         color="Provinces",
-#         title=paste0("Cumulative rates until the "
-#                      , paste0(str_split(untilDate, "-")[[1]][3]
-#                               , "/",  str_split(untilDate, "-")[[1]][2])
-#                      , " in the provinces selected")) +
-# 					 theme(legend.title = element_text(colour="black", face = "bold"))
-    
+                   , yaxis = list (title = "Cumulative Rates"))
+
   } else if(variable=="Cases"){
     
     database <- database[,c("denominazione_provincia",  "data", "totale_casi.x")]
@@ -238,12 +205,12 @@ RegionTS2 <- function(database, rangeDays, variable){
                       layout(title = paste0("Cumulative Rates of ",regione)
                              , xaxis = list(title = "Days")
                              , yaxis = list (title = "Rates")
-                             , legend=list(x = 0.1, y = 0.9))
-                                                       # , paste0(str_split(rangeDays, "-")[[1]][3]
-                                                       # , "/",  str_split(rangeDays, "-")[[1]][2])
-                                                       # , " in ", regione))
-                                       
-    # n_plot <- n_plot %>% layout(legend = list(x = 0.1, y = 0.9))
+                             , legend=list(x = 0.1, y = 0.9))%>% 
+                      config(displaylogo = FALSE,
+                             modeBarButtonsToRemove = c("zoomIn2d", "zoomOut2d","pan2d","autoScale2d"
+                                                        ,"resetScale2d","zoom3d","zoom2d","toggleSpikelines"
+                                                        ,"toImage"))
+    
     
   } else if(variable=="Cases"){
     
@@ -272,7 +239,11 @@ RegionTS2 <- function(database, rangeDays, variable){
                                                       # , paste0(str_split(rangeDays, "-")[[1]][3]
                                                       #          , "/",  str_split(rangeDays, "-")[[1]][2])
                                                       # , " in ", regione)
-                                       ,legend = list(x = 0.1, y = 0.9))
+                                       ,legend = list(x = 0.1, y = 0.9))%>% 
+                                config(displaylogo = FALSE,
+                                       modeBarButtonsToRemove = c("zoomIn2d", "zoomOut2d","pan2d","autoScale2d"
+                                                                  ,"resetScale2d","zoom3d","zoom2d","toggleSpikelines"
+                                                                  ,"toImage"))
     
   }
   
@@ -315,10 +286,11 @@ RegionTS3 <- function(database, rangeDays, variable){
     n_plot <- n_plot %>%plotly::layout(title = paste0("Daily Rates of ",regione)
                                        , xaxis = list(title = "Days")
                                        , yaxis = list (title = "Rates")
-                                       # , paste0(str_split(rangeDays, "-")[[1]][3]
-                                       #          , "/",  str_split(rangeDays, "-")[[1]][2])
-                                       # , " in ", regione)
-                                       ,legend = list(x = 0.7, y = 0.9))
+                                        ,legend = list(x = 0.7, y = 0.9))%>% 
+                                config(displaylogo = FALSE,
+                                       modeBarButtonsToRemove = c("zoomIn2d", "zoomOut2d","pan2d","autoScale2d"
+                                                                  ,"resetScale2d","zoom3d","zoom2d","toggleSpikelines"
+                                                                  ,"toImage"))
 
     
   } else if(variable=="Cases"){
@@ -349,11 +321,11 @@ RegionTS3 <- function(database, rangeDays, variable){
     n_plot <- n_plot %>%plotly::layout(title = paste0("Daily Cases of ",regione)
                                        , xaxis = list(title = "Days")
                                        , yaxis = list (title = "Cases")
-                                       # , paste0(str_split(rangeDays, "-")[[1]][3]
-                                       #          , "/",  str_split(rangeDays, "-")[[1]][2])
-                                       # , " in ", regione)
-                                       ,legend = list(x = 0.7, y = 0.9))
-
+                                       ,legend = list(x = 0.7, y = 0.9))%>% 
+                                config(displaylogo = FALSE,
+                                       modeBarButtonsToRemove = c("zoomIn2d", "zoomOut2d","pan2d","autoScale2d"
+                                                                  ,"resetScale2d","zoom3d","zoom2d","toggleSpikelines"
+                                                                  ,"toImage"))
     
   }
   

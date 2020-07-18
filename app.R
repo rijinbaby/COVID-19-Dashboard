@@ -117,7 +117,7 @@ server <- function(input, output, session){
       if(info_box_data$death_diff>=0){
       valueBox(
         paste0(info_box_data$death," (+",info_box_data$death_diff,")" ), paste("DECEASED    ","Last Update:",rangeDate[2]), color = "orange"
-        , icon = icon("procedures", lib = "font-awesome")
+        # , icon = icon("procedures", lib = "font-awesome")
         #icon = "fas fa-heart-broken"
       )}
       else{
@@ -162,24 +162,24 @@ server <- function(input, output, session){
     })
     
     
-    output$textPres <- renderText({
-      HTML(paste0("The COVID-19 outbreak in Italy has spread mainly in northern regions, particularly in Lombardy. 
-                  However, even within the same region the virus has spread irregularly from province to province, producing real epicenters of infection in some provinces but also affecting other areas with relatively lower intensity.
-                  <br />
-                  <br />
-                  In this dashboard we present some tools for analyzing and visualizing the COVID-19 outbreak in 
-                  Italy at a provincial (NUTS-3) level by integrating official data from the Italian Ministry of 
-                  Health with data extracted from official press conferences of regional health authorities, 
-                  especially regarding the number of deaths due to the Covid-19 which is not currently reported in 
-                  official data releases. An adjusted time-dependent SIRD model is used to predict the epidemics behavior 
-                  in the near future.
-                  <br />
-                  <br />
-                  Dashboard developed by: L.Ferrari, G.Gerardi, G.Manzi, A.Micheletti, F.Nicolussi, S.Salini
-                  <br />
-                  <br />
-                  We thank interns R. Baby, A. Iordache, A. Singh and N. Verardo for their contribution."))
-    })
+    # output$textPres <- renderText({
+    #   HTML(paste0("The COVID-19 outbreak in Italy has spread mainly in northern regions, particularly in Lombardy. 
+    #               However, even within the same region the virus has spread irregularly from province to province, producing real epicenters of infection in some provinces but also affecting other areas with relatively lower intensity.
+    #               <br />
+    #               <br />
+    #               In this dashboard we present some tools for analyzing and visualizing the COVID-19 outbreak in 
+    #               Italy at a provincial (NUTS-3) level by integrating official data from the Italian Ministry of 
+    #               Health with data extracted from official press conferences of regional health authorities, 
+    #               especially regarding the number of deaths due to the Covid-19 which is not currently reported in 
+    #               official data releases. An adjusted time-dependent SIRD model is used to predict the epidemics behavior 
+    #               in the near future.
+    #               <br />
+    #               <br />
+    #               Dashboard developed by: L.Ferrari, G.Gerardi, G.Manzi, A.Micheletti, F.Nicolussi, S.Salini
+    #               <br />
+    #               <br />
+    #               We thank interns R. Baby, A. Iordache, A. Singh and N. Verardo for their contribution."))
+    # })
     
    
     
@@ -224,10 +224,11 @@ server <- function(input, output, session){
                    <br />
                    <br />
                    The official data repository of the Italian Ministry of Health and the Civil Protection Agency
-                   provide Covid-19 death data only at Region level. Province level death data is not published.
+                   provide COVID-19 death data only at Region level. Province level death data is not published.
                    <br />
                    <br />
-                   We use web scraping technique to collect daily province level death data from the news articles and bulletins that are published with respect to individual regions.
+                   We use web scraping technique to collect daily province level death data from the news articles and bulletins that are published with respect to individual regions. 
+                   Not all provinces has COVID-19 death data, for deatils click on <b>Data Source</b>
                    "))
     })
 
@@ -727,8 +728,7 @@ server <- function(input, output, session){
       else{
         varTSd <- input$inProv
       }
-      
-      # varTSd="Piacenza"
+     
       deathDF <- deathDatesReg[which(deathDatesReg$province==varTSd[1]),]
 
       if(nrow(deathDF)>0){
@@ -753,13 +753,17 @@ server <- function(input, output, session){
           add_trace(y = ~weekDeaths, type = 'scatter', mode = 'lines', name = 'COVID deaths'
                     , line = list(color = 'rgb(0, 0, 0)', width = 2, dash = 'line')) %>%
           layout(
-            title = paste0("Time series of weekly deaths by year in ", unique(deathDF$province),  " until the ", maxData)
-            , xaxis = list( type = 'date'
+            title = paste0("Weekly deaths by year in ", unique(deathDF$province),  " until the ", maxData)
+              , xaxis = list( type = 'date'
 							, tickformat = "%d/%m"
 							, title = "Date")
-            , yaxis = list(title = "Death Count")
-			, legend=list(title=list(text='Year')) #'<b> Year </b>'
-          )
+              , yaxis = list(title = "Death Count")
+			        , legend=list(title=list(text='Year')) 
+          )%>% 
+          config(displaylogo = FALSE,
+                 modeBarButtonsToRemove = c("pan2d","autoScale2d"
+                                            ,"resetScale2d","toggleSpikelines"
+                                            ))
 
       }
 

@@ -862,11 +862,6 @@ SIRD_Map <- function(database, var) {
       db_geo$prov_name, var, round(db_geo$Recovery_rate,3),db_geo$date
     ) %>% lapply(htmltools::HTML)
      
-     # labels1 <- sprintf(
-     #   "<strong>Province: %s</strong><br/> No Data Available",
-     #   db_geo$prov_name
-     # ) %>% lapply(htmltools::HTML)
-    # ifelse(is.na(values),labels1,labels)
      
     provMap <- leaflet(db_geo) %>%
       setView(lat=41.8719, lng=12.5674,zoom=6 ) %>%

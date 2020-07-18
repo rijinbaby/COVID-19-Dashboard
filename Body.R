@@ -76,7 +76,7 @@ body <- dashboardBody(
                        , uiOutput(outputId = "textDrates")
                        , style = "color : black;"
                   )
-                  , downloadButton("ProvList1", "Data Scource")
+                  , downloadButton("ProvList1", "Data Source")
                   , downloadButton("PLOT_2", "Read More")
               )
             )
@@ -98,20 +98,56 @@ body <- dashboardBody(
   
   
   tabItem(tabName = "About",
-          tags$h2("COVID-Pro: A province-based analysis for Italy"),
-          fluidRow(
-            box(width = NULL#, height = 245
-                , status = "info"
-                #, background = "aqua"
-                , h5(class = "text-muted"
-                     , br()
-                     , uiOutput(outputId = "textPres")
-                     # , uiOutput(outputId = "textDrates")
-                     , style = "color : black;"
-                    )
-                )
-           )
-  ),
+          # tags$h2("COVID-Pro: A province-based analysis for Italy"),
+          # fluidRow(
+          #   box(width = NULL#, height = 245
+          #       , status = "info"
+          #       #, background = "aqua"
+          #       , h5(class = "text-muted"
+          #            , br()
+          #            , uiOutput(outputId = "textPres")
+          #            # , uiOutput(outputId = "textDrates")
+          #            , style = "color : black;"
+          #           )
+          #       )
+          #  )
+          tags$div(
+            tags$h2("COVID-Pro: A province-based analysis for Italy"),tags$br(),tags$br(),
+            "The COVID-19 outbreak in Italy has spread mainly in northern regions, particularly in 
+              Lombardy. However, even within the same region the virus has spread irregularly from province 
+              to province, producing real epicenters of infection in some provinces but also affecting other 
+              areas with relatively lower intensity.",
+            tags$br(),tags$br(),
+            "In this dashboard we present some tools for analyzing and visualizing the COVID-19 outbreak in 
+             Italy at a provincial (NUTS-3) level by integrating official data from the Italian Ministry of 
+             Health with data extracted from official press conferences of regional health authorities, 
+             especially regarding the number of deaths due to the Covid-19 which is not currently reported in 
+             official data releases. An adjusted time-dependent SIRD model is used to predict the epidemics behavior 
+             in the near future.",
+            tags$br(),tags$br(),
+            "In order to use the contents in this dashboard, please cite the publication retrievable ",
+            tags$a(href="https://arxiv.org/abs/2004.12779", " here"),".",tags$br(),
+            "A more technical paper can be found ",
+            tags$a(href="http://arxiv.org/abs/2005.12170", "here"),".",tags$br(),tags$br(),
+            "Provincial data can be accessed from ",tags$a(href="https://github.com/CEEDS-DEMM/COVID-Pro-Dataset", "project GitHub repository."),
+            " Any contribution to the expansion and/or updating of the dataset is welcome.",
+            tags$br(),tags$br(),
+            "This dashboard was developed by L. Ferrari, G. Gerardi, G. Manzi, A. Micheletti, F. Nicolussi and S. Salini.",
+            tags$br(),
+            "We thank ", tags$a(href="https://www.linkedin.com/in/rijin-baby/", "R. Baby"),", ",
+            tags$a(href="http://linkedin.com/in/alice-iordache-42509318b", "A. Iordache"),", ",
+            tags$a(href="https://www.linkedin.com/in/alex-aman-022ba6193/", "A. Singh"),", and",
+            tags$a(href="https://www.linkedin.com/in/nicoloverardo/", "N. Verardo"),
+            " for their valuable contribution during the internship with the project.",
+            tags$br(),tags$br(),tags$br(),
+            "Powered by:",tags$br(),
+            tags$a(img(src="unimi.jpg", width = "150px", height = "100px"), href="https://www.unimi.it/it"),"  ",
+            tags$a(img(src="demm.jpg", width = "150px", height = "100px"), href="http://www.demm.unimi.it/ecm/home"),"  ",
+            tags$a(img(src="ceeds.png", width = "150px", height = "100px"), href="https://ceeds.unimi.it/")
+            
+          )
+  ),  
+  
   
     # "Time Series"----
     
@@ -130,7 +166,7 @@ body <- dashboardBody(
                          , uiOutput(outputId = "textPLOT1")
                          , style = "color : black;"
                     )
-                    , downloadButton("ProvList1_2", "Data Scource")
+                    , downloadButton("ProvList1_2", "Data Source")
                     , downloadButton("PLOT1", "Read more")
                )
         )
