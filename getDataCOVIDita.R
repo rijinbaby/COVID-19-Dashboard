@@ -162,12 +162,7 @@ downAndSaveDataPMC <- function(pcmRegLink="https://raw.github.com/pcm-dpc/COVID-
 
 downDatiSQL <- function(psw="1029qpwo"){
   
-  con <- RPostgreSQL::dbConnect(RPostgres::Postgres()
-                                , dbname = "COVID19"
-                                , host="unisid-dm-demm.unisid.unimi.it"
-                                , port="5432"
-                                , user="getTweet"
-                                , password=psw)
+  con <- RPostgreSQL::dbConnect(credentials)
   
   mortiProvinces <- RPostgreSQL::dbGetQuery(conn = con
                                             , statement = "SELECT DISTINCT *
@@ -201,16 +196,9 @@ downDatiSQL <- function(psw="1029qpwo"){
 #--------------------------------------------------------
 
 #ISTAT dati comunali
-downAndSaveDataISTAT <- function(psw="1029qpwo"
-                                 , pcmTotData=pcmTOTData
-                                 , mortiProv=mortiProvinces){
+downAndSaveDataISTAT <- function(credentials){
 
-  # con <- RPostgreSQL::dbConnect(RPostgres::Postgres()
-  #                               , dbname = "COVID19"
-  #                               , host="unisid-dm-demm.unisid.unimi.it"
-  #                               , port="5432"
-  #                               , user="getTweet"
-  #                               , password=psw)
+  # con <- sql dbconnect query
   # 
   # deathDates <- RPostgreSQL::dbGetQuery(conn = con
   #                                           , statement = "SELECT DISTINCT *
